@@ -1,4 +1,6 @@
-# Your startup name here
+# A&R Web Design Co
+
+Quick change to README.md for first assignment
 
 [My Notes](notes.md)
 
