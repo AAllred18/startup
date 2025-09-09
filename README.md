@@ -28,7 +28,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 ### Elevator pitch
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+How many times have you come home to realize you do not know what you want to make for dinner? Or worse, you decided on a recipe that you do not have the ingredients for! OurTable seeks to solve these problems. Add your own recipes, plan them on your calendar and instantly get a shopping list of ingredients you need! Share this plan with your household and see updates in real time. The whole family can plan together the meals they want to share around their table. 
 
 ### Design
 
@@ -45,20 +45,28 @@ sequenceDiagram
 
 ### Key features
 
-- Describe your key feature
-- Describe your key feature
+- Secure login over HTTPS
+- Ability to Add, Edit and Delete recipes in recipe box
+- Auto shopping list generated off of your calendar
+- Assign recipes to specific meals throughout the week!
+- Real-time calender to see updates from household members
 - Describe your key feature
 
 ### Technologies
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Description here
-- **CSS** - Description here
-- **React** - Description here
-- **Service** - Description here
-- **DB/Login** - Description here
-- **WebSocket** - Description here
+- **HTML** - Uses correct HTML structure for application. 4 HTML pages. 1 for login, 2 for food calender, 3 for managing recipes, 4 for shopping list
+- **CSS** - Applying styles for login, calendar format, recipe cards, shopping list, and other features. Use to keep a clean and modern look throughout application. 
+- **React** - Provides login, routes between other pages, create reusable components (Recipe card, navbar, etc.) 
+- **Service** - Backend service with endpoints for:
+    - login
+    - recipes
+    - meal plan
+    - shopping list
+    - 
+- **DB/Login** - Store users, recipes, meal plan, shopping list. Register and login users. 
+- **WebSocket** - Frontend responds by updating the calender UI with the added recipe. Also responds by showing who added what recipe to which day. 
 
 ## 🚀 AWS deliverable
 
