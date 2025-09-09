@@ -28,7 +28,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 ### Elevator pitch
 
-How many times have you come home to realize you do not know what you want to make for dinner? Or worse, you decided on a recipe that you do not have the ingredients for! OurTable seeks to solve these problems. Add your own recipes, plan them on your calendar and instantly get a shopping list of ingredients you need! Share this plan with your household and see updates in real time. The whole family can plan together the meals they want to share around their table. 
+How many times have you wanted to try something new but did not know where to start? Or a friend sent you an amazing recipe, but it got lost in the endless messages sent? ShareABite makes it easy for you to save and discover recipes for you. The recipe application allows you to add, edit and delete recipes in your online cookbook. Feel free to discover recipes shared from other users and interact with them by liking and/or saving their recipe to try later. 
 
 ### Design
 
@@ -47,26 +47,31 @@ sequenceDiagram
 
 - Secure login over HTTPS
 - Ability to Add, Edit and Delete recipes in recipe box
-- Auto shopping list generated off of your calendar
-- Assign recipes to specific meals throughout the week!
-- Real-time calender to see updates from household members
-- Describe your key feature
+- View All recipes in 1 location
+- Post Recipes to shared page
+- Browse Recipes from all users on shared page
+- Save Recipes from other users
 
 ### Technologies
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Uses correct HTML structure for application. 4 HTML pages. 1 for login, 2 for food calender, 3 for managing recipes, 4 for shopping list
-- **CSS** - Applying styles for login, calendar format, recipe cards, shopping list, and other features. Use to keep a clean and modern look throughout application. 
+- **HTML** - Uses correct HTML structure for application. 3 HTML pages. 1 for login, 2 for My Recipes, 3 for Discover Recipes, 4 for Saved Recipes
+- **CSS** - Applying styles for login, recipe cards, and other features. Use to keep a clean and modern look throughout application. 
 - **React** - Provides login, routes between other pages, create reusable components (Recipe card, navbar, etc.) 
 - **Service** - Backend service with endpoints for:
     - login
-    - recipes
-    - meal plan
-    - shopping list
-    - 
-- **DB/Login** - Store users, recipes, meal plan, shopping list. Register and login users. 
-- **WebSocket** - Frontend responds by updating the calender UI with the added recipe. Also responds by showing who added what recipe to which day. 
+    - Add Recipe
+    - View Recipe
+    - Edit Recipe
+    - Delete Recipe
+    - Share Recipe
+    - Retrieving other Shared Recipes 
+    - Like Shared Recipe
+    - Save Shared Recipe
+      
+- **DB/Login** - Store users, recipes, likes, saves. Register and login users while securely storing their credentials. Public can view shared recipes, but cannot react/create/edit/share.
+- **WebSocket** - Live updates for newly shared recipes. 
 
 ## 🚀 AWS deliverable
 
