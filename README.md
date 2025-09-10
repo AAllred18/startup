@@ -34,6 +34,8 @@ How many times have you wanted to try something new but did not know where to st
 
 ![Design image rough draft](./Startup-Diagram.jpeg)
 
+### Sequence Diagram
+
 ```mermaid
 sequenceDiagram
     actor You
