@@ -32,7 +32,7 @@ How many times have you wanted to try something new but did not know where to st
 
 ### Design
 
-/Startup-Diagram.jpeg
+![Design image rough draft] (Startup-Diagram.jpeg)
 
 ```mermaid
 sequenceDiagram
