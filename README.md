@@ -28,13 +28,11 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 ### Elevator pitch
 
-How many times have you wanted to try something new but did not know where to start? Or a friend sent you an amazing recipe, but it got lost in the endless messages sent? ShareABite makes it easy for you to save and discover recipes for you. The recipe application allows you to add, edit and delete recipes in your online cookbook. Feel free to discover recipes shared from other users and interact with them by liking and/or saving their recipe to try later. 
+How many times have you wanted to try something new but did not know where to start? Or lost a great recipe a friend sent to you through messages? ShareABite makes it easy for you to save and discover dishes for you. The recipe application allows you to add, edit and delete recipes in your online cookbook. Feel free to discover recipes shared from other users and interact with them by liking and/or saving their recipe to try later. 
 
 ### Design
 
-![Design image](placeholder.png)
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+/Startup-Diagram.jpeg
 
 ```mermaid
 sequenceDiagram
@@ -50,15 +48,20 @@ sequenceDiagram
 - View All recipes in 1 location
 - Post Recipes to shared page
 - Browse Recipes from all users on shared page
-- Save Recipes from other users
+- Save and Like Recipes from other users
+- All recipes are saved 
 
 ### Technologies
 
 I am going to use the required technologies in the following ways.
 
-- **HTML** - Uses correct HTML structure for application. 3 HTML pages. 1 for login, 2 for My Recipes, 3 for Discover Recipes, 4 for Saved Recipes
-- **CSS** - Applying styles for login, recipe cards, and other features. Use to keep a clean and modern look throughout application. 
-- **React** - Provides login, routes between other pages, create reusable components (Recipe card, navbar, etc.) 
+- **HTML** - Uses correct HTML structure for application. Total of 4 HTML pages.
+      1. Login/LandingPage
+      2. My Recipes
+      3. Discover Recipes
+      4. Saved Recipes
+- **CSS** - Applying styles for login, recipe cards, and other features. Use to keep a clean and modern look throughout application. Animations for various buttons throughout pages. Mobile friendly design. 
+- **React** - Provides login, routes between all pages, create reusable components (Recipe card, recipe card viewer, navbar, shared recipe view card, etc.) 
 - **Service** - Backend service with endpoints for:
     - login
     - Add Recipe
@@ -69,9 +72,9 @@ I am going to use the required technologies in the following ways.
     - Retrieving other Shared Recipes 
     - Like Shared Recipe
     - Save Shared Recipe
-      
-- **DB/Login** - Store users, recipes, likes, saves. Register and login users while securely storing their credentials. Public can view shared recipes, but cannot react/create/edit/share.
-- **WebSocket** - Live updates for newly shared recipes. 
+    - Integrate with TheMealDB API call to randomly discover recipes on top of shared recipes
+- **DB/Login** - Store users, recipes, likes, saves. Register and login users while securely storing their credentials. Public cannot react/create/edit/share recipes until they create an account and login.
+- **WebSocket** - Live updates for newly shared recipes will appear for all logged-in users. 
 
 ## 🚀 AWS deliverable
 
