@@ -25,14 +25,44 @@
       <h1>My Recipes</h1>
       <p>Store all of your recipes here</p>
 
+      <!-- Smaller nav bar to add new recipe or search for recipe -->
       <div>
-        <!-- Smaller nav bar to add new recipe or search for recipe -->
+        <p>User: NewUser</p>
         <button>Add New Recipe</button>
-        <form aria-label="Recipe search">
+        <form>
           <input id="q" name="q" type="search" placeholder="Search by Recipe Name">
           <button type="submit">Search</button>
         </form>
       </div>
+
+      <!-- Section to create the recipe list -->
+          <!-- This Section is the placeholder for the content stored in the database-->
+      <section>
+        <h3>All Recipes</h3>
+        <ul>
+          <!-- Example recipe listings -->
+          <li>
+            <img src="ShoyuChicken.jpeg">
+            <div>
+              <h4>Shoyu Chicken</h4>
+              <p>35 minutes</p>
+              <p>Difficulty: Easy</p>
+              <a href="">More</a>
+            </div>
+          </li>
+
+           <li>
+            <img src="FriedRice.jpeg">
+            <div>
+              <h4>Fried Rice</h4>
+              <p>20 minutes</p>
+              <p>Difficulty: Easy</p>
+              <a href="">More</a>
+            </div>
+          </li>
+
+        </ul>
+      </section>
 
 
     </main>
