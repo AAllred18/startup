@@ -88,15 +88,15 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [x] **HTML pages** - I did complete this part of the deliverable.
-- [x] **Proper HTML element usage** - I did not complete this part of the deliverable.
-- [x] **Links** - I did not complete this part of the deliverable.
-- [x] **Text** - I did not complete this part of the deliverable.
-- [x] **3rd party API placeholder** - I did not complete this part of the deliverable.
-- [x] **Images** - I did not complete this part of the deliverable.
-- [x] **Login placeholder** - I did not complete this part of the deliverable.
-- [x] **DB data placeholder** - I did not complete this part of the deliverable.
-- [x] **WebSocket placeholder** - I did not complete this part of the deliverable.
+- [x] **HTML pages** - I created several HTMl pages for the funcionality of the application. What was originally 4 evolved into at least 7 pages (may need more but react should help with some funcionality)
+- [x] **Proper HTML element usage** - I used HTML elements correctly throughout each page. 
+- [x] **Links** - I have a functioning Navbar that links to the main pages. Individual pages connected to related pages (Ex. Recipes - Add New Recipe)
+- [x] **Text** - I implemented text throughout the website as needed. Not a text dense website.
+- [x] **3rd party API placeholder** - I have a page connected to Discover Recipes that will connect to an API that will return a random recipe
+- [x] **Images** - I used images throughout the application for the logo and recipes.
+- [x] **Login placeholder** - I have login placeholder on index.html
+- [x] **DB data placeholder** - I have several placeholders for the DB data from the MyRecipes page to the saved discover recipes.
+- [x] **WebSocket placeholder** - A placeholder exists on the Discover page to display shared recipes by application users.
 
 ## 🚀 CSS deliverable
 
