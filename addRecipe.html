@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ShareABite</title>
+    <link rel="icon" href="favicon.ico" />
+  </head>
+  <body>
+    <header>
+      <h1>ShareABite<sup>&reg;</sup></h1>
+
+      <nav>
+        <menu>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="recipes.html">My Recipes</a></li>
+          <li><a href="discover.html">Discover</a></li>
+        </menu>
+      </nav>
+
+      <hr />
+    </header>
+
+    <main>
+      <h2>Add New Recipe</h2>
+
+      <!-- Form to add recipes to recipebook -->
+      <form>
+        <fieldset>
+          <legend>Basics</legend>
+
+          <label for="title">Recipe Title <span aria-hidden="true">*</span></label>
+          <input id="title" name="title" type="text" required placeholder="Recipe Name">
+
+          <label for="description">Short Description</label>
+          <textarea id="description" name="description" maxlength="200" placeholder="Enter a short description of your recipe here"></textarea>
+
+          <div class="row">
+            <label for="servings">Servings</label>
+            <input id="servings" name="servings" type="number" min="1" step="1" placeholder="4">
+
+            <label for="difficulty">Difficulty</label>
+            <select id="difficulty" name="difficulty">
+              <option>Easy</option>
+              <option>Medium</option>
+              <option>Hard</option>
+            </select>
+
+            <label for="total">Total Time (min)</label>
+            <input id="total" name="total_minutes" type="number" min="0" step="1" value="0">
+
+          </div>
+        </fieldset>
+
+    </form>
+
+    </main>
+
+    <footer>
+      <hr />
+      <span class="text-reset">Author - AJ Allred</span>
+      <br />
+      <a href="https://github.com/AAllred18/startup/tree/main">GitHub</a>
+    </footer>
+  </body>
+</html>

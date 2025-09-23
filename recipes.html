@@ -22,18 +22,20 @@
     </header>
 
     <main>
-      <h1>My Recipes</h1>
+      <h2>My Recipes</h2>
       <p>Store all of your recipes here</p>
 
       <!-- Smaller nav bar to add new recipe or search for recipe -->
-      <div>
+      <header>
         <p>User: NewUser</p>
-        <button>Add New Recipe</button>
+
+        <p><a href="addRecipe.html" class="button">Add New Recipe</a></p>
+
         <form>
           <input id="q" name="q" type="search" placeholder="Search by Recipe Name">
           <button type="submit">Search</button>
         </form>
-      </div>
+      </header>
 
       <!-- Section to create the recipe list -->
           <!-- This Section is the placeholder for the content stored in the database-->
@@ -41,13 +43,14 @@
         <h3>All Recipes</h3>
         <ul>
           <!-- Example recipe listings -->
+           <!-- Want to make a React card component to cleanly dispay recipe info -->
           <li>
             <img src="ShoyuChicken.jpeg">
             <div>
               <h4>Shoyu Chicken</h4>
               <p>35 minutes</p>
               <p>Difficulty: Easy</p>
-              <a href="">More</a>
+              <a href="viewRecipe.html">More</a>
             </div>
           </li>
 
