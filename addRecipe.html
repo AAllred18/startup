@@ -25,32 +25,64 @@
       <h2>Add New Recipe</h2>
 
       <!-- Form to add recipes to recipebook -->
+       <!-- May want to add or limit additional fields -->
       <form>
         <fieldset>
           <legend>Basics</legend>
 
-          <label for="title">Recipe Title <span aria-hidden="true">*</span></label>
-          <input id="title" name="title" type="text" required placeholder="Recipe Name">
-
-          <label for="description">Short Description</label>
-          <textarea id="description" name="description" maxlength="200" placeholder="Enter a short description of your recipe here"></textarea>
+          <label>Recipe Title <span>*</span></label>
+          <input type="text" required placeholder="Recipe Name">
+          <label>Short Description</label>
+          <textarea maxlength="200" placeholder="Enter a short description of your recipe here"></textarea>
 
           <div class="row">
-            <label for="servings">Servings</label>
-            <input id="servings" name="servings" type="number" min="1" step="1" placeholder="4">
+            <label>Servings</label>
+            <input type="number" min="1" step="1" placeholder="4">
 
-            <label for="difficulty">Difficulty</label>
-            <select id="difficulty" name="difficulty">
+            <label>Difficulty</label>
+            <select>
               <option>Easy</option>
               <option>Medium</option>
               <option>Hard</option>
             </select>
 
-            <label for="total">Total Time (min)</label>
-            <input id="total" name="total_minutes" type="number" min="0" step="1" value="0">
-
+          </div>
+          <div class="row">
+            <label>Total Time (min)</label>
+            <input type="number" min="0" step="1" value="0">
           </div>
         </fieldset>
+        
+      <fieldset>
+        <legend>Ingredients</legend>
+        <ul>
+          <li>
+            <input type="text" placeholder="Ingredient + Quantity here" required>
+            <button type="button">Remove</button>
+          </li>
+        </ul>
+        <!-- Need to research the best way to get a list of ingredients and ordered list of steps ands tore in DB -->
+        <button type="button">+ Add Ingredient</button>
+      </fieldset>
+
+      <fieldset>
+        <legend>Steps</legend>
+        <ol>
+          <li>
+            <label>Step 1</label>
+            <textarea rows="2" placeholder="Describe the first step…" required></textarea>
+            <button type="button">Remove</button>
+          </li>
+        </ol>
+        <button type="button">+ Add Step</button>
+      </fieldset>
+
+      <fieldset>
+        <label>Photo (optional)</label>
+        <input type="file" accept="image/*">
+      </fieldset>
+
+      <p><button type="submit">Save Recipe</button></p>
 
     </form>
 
