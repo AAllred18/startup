@@ -1,4 +1,4 @@
-# A&R Web Design Co
+# OurTable Startup
 
 Quick change to README.md for first assignment
 
