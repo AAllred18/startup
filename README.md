@@ -102,8 +102,8 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Header, footer, and main content body** - I did not complete this part of the deliverable.
-- [ ] **Navigation elements** - I did not complete this part of the deliverable.
+- [x] **Header, footer, and main content body** - I applied styles to the header, footer and main content for each page.
+- [x] **Navigation elements** - All navigation elements are the same on each page. They are styled to reflect the theme of the website. 
 - [ ] **Responsive to window resizing** - I did not complete this part of the deliverable.
 - [ ] **Application elements** - I did not complete this part of the deliverable.
 - [ ] **Application text content** - I did not complete this part of the deliverable.

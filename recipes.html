@@ -6,9 +6,6 @@
     <title>ShareABite</title>
     <link rel="icon" href="favicon.ico" />
 
-     <!-- Include link to main.css -->
-    <link rel="stylesheet" href="main.css" />
-    <link rel="stylesheet" href="myrecipes.css" />
     <!-- Include bootstrap CSS framework -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
@@ -16,6 +13,11 @@
       integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
       crossorigin="anonymous"
     />
+
+    <!-- Include link to main.css -->
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="myrecipes.css" />
+
   </head>
   <body>
     <header>
@@ -42,62 +44,99 @@
     </header>
 
     <main>
-      <h2>My Recipes</h2>
-      <p>Store all of your recipes here</p>
+      <h1 class="text-center py-3">My Recipes</h1>
+      <h4 class="text-center">Store all of your recipes here!</h4>
 
       <!-- Smaller nav bar to add new recipe or search for recipe -->
-      <header>
-        <p>User: NewUser</p>
+      <header class="py-3 px-4">
+        <div class="d-flex align-items-center w-100">
+          <div class="fw-semibold me-3">
+            User: NewUser
+          </div>
 
-        <p><a href="addRecipe.html" class="button">Add New Recipe</a></p>
+          <div class="d-flex ms-auto align-items-center gap-3">
+            <a href="addRecipe.html" class="btn btn-primary">Add New Recipe</a>
 
-        <form>
-          <input id="q" name="q" type="search" placeholder="Search by Recipe Name">
-          <button type="submit">Search</button>
-        </form>
+            <form class="d-flex align-items-center gap-2 m-0">
+              <input id="q" name="q" type="search" class="form-control" placeholder="Search by Recipe Name">
+              <button type="submit" class="btn btn-outline-secondary">Search</button>
+            </form>
+          </div>
+        </div>
+        
       </header>
 
       <!-- Section to create the recipe list -->
           <!-- This Section is the placeholder for the content stored in the database-->
       <section>
-        <h3>All Recipes</h3>
         <ul>
           <!-- Example recipe listings -->
            <!-- Want to make a React card component to cleanly dispay recipe info -->
-          <li>
-            <img src="ShoyuChicken.jpeg">
-            <div>
-              <h4>Shoyu Chicken</h4>
-              <p>35 minutes</p>
-              <p>Difficulty: Easy</p>
-              <a href="viewRecipe.html">More</a>
-              <a href="">Edit</a>
-              <a href="">Share</a>
+          <div class="card mb-4">
+            <img src="ShoyuChicken.jpeg" class="card-img-top">
+            <div class="card-body text-center">
+              <h4 class="card-title">Shoyu Chicken</h4>
+              <p class="card-text mb-1">Prep + Cook: 35 minutes</p>
+              <p class="card-text">Difficulty: Easy</p>
+              <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="viewRecipe.html" class="btn btn-primary">View</a>
+                <a href="" class="btn btn-outline-secondary">Edit</a>
+                <a href="" class="btn btn-outline-secondary">Share</a>
+              </div>
             </div>
-          </li>
+          </div>
 
-           <li>
-            <img src="FriedRice.jpeg">
-            <div>
-              <h4>Fried Rice</h4>
-              <p>20 minutes</p>
-              <p>Difficulty: Easy</p>
-              <a href="">More</a>
-              <a href="">Edit</a>
-              <a href="">Share</a>
+          <div class="card mb-4">
+            <img src="FriedRice.jpeg" class="card-img-top">
+            <div class="card-body text-center">
+              <h4 class="card-title">Fried Rice</h4>
+              <p class="card-text mb-1">Prep + Cook: 20 minutes</p>
+              <p class="card-text">Difficulty: Easy</p>
+              <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="" class="btn btn-primary">View</a>
+                <a href="" class="btn btn-outline-secondary">Edit</a>
+                <a href="" class="btn btn-outline-secondary">Share</a>
+              </div>
             </div>
-          </li>
+          </div>
+
+          <div class="card mb-4">
+            <img src="ShoyuChicken.jpeg" class="card-img-top">
+            <div class="card-body text-center">
+              <h4 class="card-title">Shoyu Chicken</h4>
+              <p class="card-text mb-1">Prep + Cook: 35 minutes</p>
+              <p class="card-text">Difficulty: Easy</p>
+              <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="viewRecipe.html" class="btn btn-primary">View</a>
+                <a href="" class="btn btn-outline-secondary">Edit</a>
+                <a href="" class="btn btn-outline-secondary">Share</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-4">
+            <img src="FriedRice.jpeg" class="card-img-top">
+            <div class="card-body text-center">
+              <h4 class="card-title">Fried Rice</h4>
+              <p class="card-text mb-1">Prep + Cook: 20 minutes</p>
+              <p class="card-text">Difficulty: Easy</p>
+              <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="" class="btn btn-primary">View</a>
+                <a href="" class="btn btn-outline-secondary">Edit</a>
+                <a href="" class="btn btn-outline-secondary">Share</a>
+              </div>
+            </div>
+          </div>
 
         </ul>
       </section>
 
     </main>
 
-    <footer>
-      <hr />
+    <footer class="mt-auto">
       <span class="text-reset">Author - AJ Allred</span>
       <br />
-      <a href="https://github.com/AAllred18/startup/tree/main">GitHub</a>
+      <a href="https://github.com/AAllred18/startup/tree/main" style="color: white;">GitHub</a>
     </footer>
   </body>
 </html>
