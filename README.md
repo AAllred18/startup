@@ -104,10 +104,10 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 - [x] **Header, footer, and main content body** - I applied styles to the header, footer and main content for each page.
 - [x] **Navigation elements** - All navigation elements are the same on each page. They are styled to reflect the theme of the website. 
-- [ ] **Responsive to window resizing** - I did not complete this part of the deliverable.
-- [ ] **Application elements** - I did not complete this part of the deliverable.
-- [ ] **Application text content** - I did not complete this part of the deliverable.
-- [ ] **Application images** - I did not complete this part of the deliverable.
+- [x] **Responsive to window resizing** - Each page adjusts to the screen size.
+- [x] **Application elements** - Used styles on every aspect of the project. For instance, the buttons (after adjusting the bootstrap theme) follow the color scheme of the application. 
+- [x] **Application text content** - Adjusted most text to be centered on the screen and interact with flex. All font matches what is found in main.css for main/body
+- [x] **Application images** - I adjusted images (logo, recipes) throughout each page on this application. 
 
 ## 🚀 React part 1: Routing deliverable
 
