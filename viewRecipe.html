@@ -5,44 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ShareABite</title>
     <link rel="icon" href="favicon.ico" />
+
+    <!-- Include bootstrap CSS framework -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+
+    <!-- Include link to main.css -->
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="addRecipe.css" />
   </head>
   <body>
     <header>
-      <h1>ShareABite<sup>&reg;</sup></h1>
+      <!-- Navigation elements -->
+       <!-- Links between pages as necessary -->
+      <nav class="navbar navbar-expand-md navbar-dark navbar-custom px-4">
+        <a class="navbar-brand fw-semibold" href="index.html">
+          ShareABite<sup>&reg;</sup>
+        </a>
 
-      <nav>
-        <menu>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="recipes.html">My Recipes</a></li>
-          <li><a href="discover.html">Discover</a></li>
-        </menu>
+        <ul class="navbar-nav ms-auto d-flex flex-row gap-2">
+          <li class="nav-item">
+             <a class="nav-link px-3" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 active" href="recipes.html">My Recipes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3" href="discover.html">Discover</a>
+          </li>
+        </ul>
       </nav>
-
-      <hr />
+  
     </header>
 
     <main>
 
       <!-- Example view of full recipe details -->
-      <h2>Shoyu Chicken</h2>
+      <h2 class="mb-4 mt-3">Shoyu Chicken</h2>
 
-      <img src="ShoyuChicken.jpeg">
+      <img src="ShoyuChicken.jpeg" class="mb-3">
 
-      <p>35 minutes</p>
-      <p>Difficulty: Easy</p>
+      <h4>Prep + Cook Time: 35 minutes</h4>
+      <h4>Difficulty: Easy</h4>
 
-      <p>Ingredients</p>
-      <ul>
-        <li>Chicken</li>
-        <li>Shoyu</li>
-        <li>Brown Sugar</li>
-        <li>Ginger</li>
-        <li>Garlic</li>
-        <li>Water</li>
-        <li>Green Onions</li>
-      </ul>
+      <h4>Ingredients</h4>
+      <div class="row row-cols-2 row-cols-3 row-cols-4">
+        <li class="col">Chicken</li>
+        <li class="col">Shoyu</li>
+        <li class="col">Brown Sugar</li>
+        <li class="col">Ginger</li>
+        <li class="col">Garlic</li>
+        <li class="col">Water</li>
+        <li class="col">Green Onions</li>
+      </div>
 
-      <p>Directions</p>
+      <h4>Directions</h4>
       <ol>
         <li>Prepare the chicken by pat drying it with a paper towel. It will help absorb more flavor while cooking.</li>
         <li>Heat a large pot or deep pan over medium-high heat. Combine shoyu, brown sugar, honey, water, ginger, and garlic. Stir to dissolve the sugar and honey.</li>
@@ -54,11 +75,10 @@
 
     </main>
 
-    <footer>
-      <hr />
+    <footer class="mt-auto">
       <span class="text-reset">Author - AJ Allred</span>
       <br />
-      <a href="https://github.com/AAllred18/startup/tree/main">GitHub</a>
+      <a href="https://github.com/AAllred18/startup/tree/main" style="color: white;">GitHub</a>
     </footer>
   </body>
 </html>
