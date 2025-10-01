@@ -88,24 +88,25 @@
         <button type="button" class="btn btn-primary">+ Add Ingredient</button>
       </fieldset>
 
-      <fieldset>
+      <fieldset class="mb-4">
         <legend>Steps</legend>
         <ol>
-          <li>
-            <label>Step 1</label>
-            <textarea rows="2" placeholder="Describe the first step…" required></textarea>
-            <button type="button">Remove</button>
+          <li class="d-flex">
+            <textarea rows="2" class="form-control" placeholder="Describe the first step…" required></textarea>
+            <button type="button" class="btn btn-outline-secondary">Remove</button>
           </li>
         </ol>
-        <button type="button">+ Add Step</button>
+        <button type="button" class="btn btn-primary">+ Add Step</button>
       </fieldset>
 
-      <fieldset>
-        <label>Photo (optional)</label>
+      <fieldset class="mb-4">
+        <legend>Photo (optional)</legend>
         <input type="file" accept="image/*">
       </fieldset>
 
-      <p><button type="submit">Save Recipe</button></p>
+      <div class="mb-4">
+        <button type="submit" class="btn btn-primary">Save Recipe</button>
+      </div>
 
     </form>
 
