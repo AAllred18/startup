@@ -5,65 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ShareABite</title>
     <link rel="icon" href="favicon.ico" />
+
+    <!-- Include bootstrap CSS framework -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+
+    <!-- Include link to main.css -->
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="addRecipe.css" />
   </head>
   <body>
     <header>
-      <h1>ShareABite<sup>&reg;</sup></h1>
+      <!-- Navigation elements -->
+       <!-- Links between pages as necessary -->
+      <nav class="navbar navbar-expand-md navbar-dark navbar-custom px-4">
+        <a class="navbar-brand fw-semibold" href="index.html">
+          ShareABite<sup>&reg;</sup>
+        </a>
 
-      <nav>
-        <menu>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="recipes.html">My Recipes</a></li>
-          <li><a href="discover.html">Discover</a></li>
-        </menu>
+        <ul class="navbar-nav ms-auto d-flex flex-row gap-2">
+          <li class="nav-item">
+             <a class="nav-link px-3" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 active" href="recipes.html">My Recipes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3" href="discover.html">Discover</a>
+          </li>
+        </ul>
       </nav>
-
-      <hr />
+  
     </header>
 
     <main>
-      <h2>Add New Recipe</h2>
+      <h2 class="my-4">Add New Recipe</h2>
 
       <!-- Form to add recipes to recipebook -->
        <!-- May want to add or limit additional fields -->
         <!-- Use a form similar to this for editing a recipe (populate this form with information from DB) -->
       <form>
-        <fieldset>
+        <fieldset class="mb-4">
           <legend>Basics</legend>
 
-          <label>Recipe Title <span>*</span></label>
-          <input type="text" required placeholder="Recipe Name">
-          <label>Short Description</label>
-          <textarea maxlength="200" placeholder="Enter a short description of your recipe here"></textarea>
+          <div class="mb-3">
+            <label>Recipe Title <span>*</span></label>
+            <input type="text" class="form-control" required placeholder="Recipe Name">
+          </div> 
 
-          <div class="row">
+          <div class="mb-3">
+            <label>Short Description</label>
+            <textarea maxlength="200" placeholder="Enter a short description of your recipe here" class="form-control"></textarea>
+          </div>
+          
+          <div class="mb-3">
             <label>Servings</label>
-            <input type="number" min="1" step="1" placeholder="4">
+            <input type="number" min="1" step="1" placeholder="4" class="form-control mb-3">
 
             <label>Difficulty</label>
-            <select>
+            <select class="form-select mb-3">
               <option>Easy</option>
               <option>Medium</option>
               <option>Hard</option>
             </select>
 
-          </div>
-          <div class="row">
             <label>Total Time (min)</label>
-            <input type="number" min="0" step="1" value="0">
+            <input type="number" min="0" step="1" value="0" class="form-control mb-3">
           </div>
         </fieldset>
         
-      <fieldset>
+      <fieldset class="mb-4">
         <legend>Ingredients</legend>
-        <ul>
-          <li>
-            <input type="text" placeholder="Ingredient + Quantity here" required>
-            <button type="button">Remove</button>
-          </li>
-        </ul>
+          <div class=" d-flex gap-2 mb-2 justify-content-between">
+            <input type="text" class="form-control" placeholder="Ingredient + Quantity here" required>
+            <button type="button" class="btn btn-outline-secondary">Remove</button>
+          </div>
         <!-- Need to research the best way to get a list of ingredients and ordered list of steps ands tore in DB -->
-        <button type="button">+ Add Ingredient</button>
+        <button type="button" class="btn btn-primary">+ Add Ingredient</button>
       </fieldset>
 
       <fieldset>
@@ -89,11 +111,10 @@
 
     </main>
 
-    <footer>
-      <hr />
+    <footer class="mt-auto">
       <span class="text-reset">Author - AJ Allred</span>
       <br />
-      <a href="https://github.com/AAllred18/startup/tree/main">GitHub</a>
+      <a href="https://github.com/AAllred18/startup/tree/main" style="color: white;">GitHub</a>
     </footer>
   </body>
 </html>
