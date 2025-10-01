@@ -17,6 +17,7 @@
 
     <!-- Include link to main.css -->
     <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="myrecipes.css"/>
   </head>
   <body>
     <header>
@@ -35,7 +36,7 @@
             <a class="nav-link px-3" href="recipes.html">My Recipes</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link px-3" href="discover.html">Discover</a>
+            <a class="nav-link px-3 active" href="discover.html">Discover</a>
           </li>
         </ul>
       </nav>
@@ -47,42 +48,112 @@
       <h3>Explore new recipes from people on our platform</h3>
 
       <!-- Smaller nav bar to be givena random recipe or view saved shared recipes -->
-      <header>
-        <p><a href="randomRecipe.html" class="button">Random Recipe</a></p>
-        <p><a href="savedRecipes.html" class="button">Saved</a></p>
+      <header class="py-3 px-4">
+        <div class="d-flex align-items-center w-100">
+          <div class="d-flex ms-auto align-items-center gap-3">
+            <a href="savedRecipes.html" class="btn btn-primary">Saved Recipes</a>
+            <a href="randomRecipe.html" class="btn btn-primary">Random Recipe</a>
+          </div>
+        </div>
+        
       </header>
 
       <!-- This section is a placeholder for the WebSocket data -->
        <!-- Real time recipes shared will appear here -->
       <section>
-        <ul>
-          <!-- Want to make a React card component to cleanly dispay recipe info -->
-          <li>
-            <img src="Enchilada.jpeg">
-            <div>
-              <h4>Chicken Enchilada</h4>
-              <p>35 minutes</p>
-              <p>Difficulty: Easy</p>
-              <p>User: OnoFood18</p>
-              <a href="" class="button">More</a>
-              <a href="" class="button">Save Recipe</a>
+        <div class="recipes-container">
+            <!-- Want to make a React card component to cleanly dispay recipe info -->
+             <!-- Placed the same 2 recipes 6 times to show responsive design -->
+            <div class="card recipe-card mb-4 h-100">
+              <img src="Enchilada.jpeg" class="card-img-top">
+              <div class="card-body text-center">
+                <h4 class="card-title">Chicken Enchilada</h4>
+                <p class="card-text mb-1">Prep + Cook: 35 minutes</p>
+                <p class="card-text mb-1">Difficulty: Easy</p>
+                <p class="card-text">User: OnoFood18</p>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                  <!-- In the future, icons could be used to signify action -->
+                  <a href="" class="btn btn-primary">View</a>
+                  <a href="savedRecipes.html" class="btn btn-outline-secondary">Save</a>
+                </div>
+              </div>
             </div>
-          </li>
 
-          <br>
-
-          <li>
-            <img src="marrymechicken.jpg" style="width:150px; height:auto;">
-            <div>
-              <h4>Marry Me Chicken with Pasta</h4>
-              <p>25 minutes</p>
-              <p>Difficulty: Easy</p>
-              <p>User: Foodi273</p>
-              <a href="" class="button">More</a>
-              <a href="" class="button">Save Recipe</a>
+            <div class="card recipe-card mb-4">
+              <img src="marrymechicken.jpg" class="card-img-top">
+              <div class="card-body text-center">
+                <h4 class="card-title">Marry Me Chicken</h4>
+                <p class="card-text mb-1">Prep + Cook: 25 minutes</p>
+                <p class="card-text mb-1">Difficulty: Easy</p>
+                <p class="card-text">User: Foodie234</p>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                  <!-- In the future, icons could be used to signify action -->
+                  <a href="" class="btn btn-primary">View</a>
+                  <a href="savedRecipes.html" class="btn btn-outline-secondary">Save</a>
+                </div>
+              </div>
             </div>
-          </li>
 
+            <div class="card recipe-card mb-4 h-100">
+              <img src="Enchilada.jpeg" class="card-img-top">
+              <div class="card-body text-center">
+                <h4 class="card-title">Chicken Enchilada</h4>
+                <p class="card-text mb-1">Prep + Cook: 35 minutes</p>
+                <p class="card-text mb-1">Difficulty: Easy</p>
+                <p class="card-text">User: OnoFood18</p>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                  <!-- In the future, icons could be used to signify action -->
+                  <a href="" class="btn btn-primary">View</a>
+                  <a href="savedRecipes.html" class="btn btn-outline-secondary">Save</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="card recipe-card mb-4">
+              <img src="marrymechicken.jpg" class="card-img-top">
+              <div class="card-body text-center">
+                <h4 class="card-title">Marry Me Chicken</h4>
+                <p class="card-text mb-1">Prep + Cook: 25 minutes</p>
+                <p class="card-text mb-1">Difficulty: Easy</p>
+                <p class="card-text">User: Foodie234</p>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                  <!-- In the future, icons could be used to signify action -->
+                  <a href="" class="btn btn-primary">View</a>
+                  <a href="savedRecipes.html" class="btn btn-outline-secondary">Save</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="card recipe-card mb-4 h-100">
+              <img src="Enchilada.jpeg" class="card-img-top">
+              <div class="card-body text-center">
+                <h4 class="card-title">Chicken Enchilada</h4>
+                <p class="card-text mb-1">Prep + Cook: 35 minutes</p>
+                <p class="card-text mb-1">Difficulty: Easy</p>
+                <p class="card-text">User: OnoFood18</p>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                  <!-- In the future, icons could be used to signify action -->
+                  <a href="" class="btn btn-primary">View</a>
+                  <a href="savedRecipes.html" class="btn btn-outline-secondary">Save</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="card recipe-card mb-4">
+              <img src="marrymechicken.jpg" class="card-img-top">
+              <div class="card-body text-center">
+                <h4 class="card-title">Marry Me Chicken</h4>
+                <p class="card-text mb-1">Prep + Cook: 25 minutes</p>
+                <p class="card-text mb-1">Difficulty: Easy</p>
+                <p class="card-text">User: Foodie234</p>
+                <div class="d-flex justify-content-center gap-3 mt-3">
+                  <!-- In the future, icons could be used to signify action -->
+                  <a href="" class="btn btn-primary">View</a>
+                  <a href="savedRecipes.html" class="btn btn-outline-secondary">Save</a>
+                </div>
+              </div>
+            </div>
+        </div>
       </section>
     </main>
 
