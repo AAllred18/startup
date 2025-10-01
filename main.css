@@ -51,7 +51,7 @@ main {
 }
 
 .subheader {
-  
+
 }
 
 footer {
@@ -65,4 +65,9 @@ footer {
 .btn-primary {
   background-color: #3C7C79;
   border-color: #3C7C79;
+}
+.btn-primary:hover{
+  background-color: white;
+  border-color: #3C7C79;
+  color: #3C7C79;
 }
