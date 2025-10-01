@@ -6,21 +6,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ShareABite</title>
     <link rel="icon" href="favicon.ico" />
+
+    <!-- Include link to main.css -->
+    <link rel="stylesheet" href="main.css" />
+    <!-- Include bootstrap CSS framework -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+
   </head>
   <body>
     <header>
-      <h1>ShareABite<sup>&reg;</sup></h1>
-
       <!-- Navigation elements -->
        <!-- Links between pages as necessary -->
-      <nav>
-        <menu>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="recipes.html">My Recipes</a></li>
-          <li><a href="discover.html">Discover</a></li>
-        </menu>
+      <nav class="navbar navbar-expand-md navbar-dark navbar-custom px-4">
+        <a class="navbar-brand fw-semibold" href="index.html">
+          ShareABite<sup>&reg;</sup>
+        </a>
+
+        <ul class="navbar-nav ms-auto d-flex flex-row gap-2">
+          <li class="nav-item">
+             <a class="nav-link px-3 active" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3" href="recipes.html">My Recipes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3" href="discover.html">Discover</a>
+          </li>
+        </ul>
       </nav>
-      <hr />
+  
     </header>
 
     <main>
