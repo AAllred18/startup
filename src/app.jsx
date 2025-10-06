@@ -14,7 +14,7 @@ import { ViewRecipe } from './viewRecipe/viewRecipe';
 export default function App() {
   return (
     <BrowserRouter> 
-        <div>
+        <div className='body'>
             <header>
                 <nav className="navbar navbar-expand-md navbar-dark navbar-custom px-4">
                     <NavLink className="navbar-brand fw-semibold" to="/">
@@ -22,21 +22,21 @@ export default function App() {
                     </NavLink>
 
                     <ul className="navbar-nav ms-auto d-flex flex-row gap-2">
-                    <li className="nav-item">
-                        <NavLink className="nav-link" to="">
-                            Home
-                        </NavLink>
-                    </li>
-                    <li className="nav-item">
-                        <NavLink className="nav-link" to="myRecipes">
-                            Recipes
-                        </NavLink>
-                    </li>
-                    <li className="nav-item">
-                        <NavLink className="nav-link" to="discover">
-                            Discover
-                        </NavLink>
-                    </li>
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="">
+                                Home
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="myRecipes">
+                                Recipes
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="discover">
+                                Discover
+                            </NavLink>
+                        </li>
                     </ul>
                 </nav>
             </header>
