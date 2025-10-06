@@ -16,7 +16,9 @@ export function MyRecipes() {
           </div>
 
           <div class="d-flex ms-auto align-items-center gap-3">
-            <a href="addRecipe.html" class="btn btn-primary">Add New Recipe</a>
+            <NavLink to="/addRecipe" className="btn btn-primary">
+                Add New Recipe
+            </NavLink>
 
             <form class="d-flex align-items-center gap-2 m-0">
               <input id="q" name="q" type="search" class="form-control" placeholder="Search by Recipe Name"/>
@@ -37,7 +39,9 @@ export function MyRecipes() {
               <p class="card-text mb-1">Prep + Cook: 35 minutes</p>
               <p class="card-text">Difficulty: Easy</p>
               <div class="d-flex justify-content-center gap-3 mt-3">
-                <a href="viewRecipe.html" class="btn btn-primary">View</a>
+                <NavLink to="/viewRecipe" className="btn btn-primary">
+                    View
+                </NavLink>
                 <a href="" class="btn btn-outline-secondary">Edit</a>
                 <a href="" class="btn btn-outline-secondary">Share</a>
               </div>

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { NavLink } from 'react-router-dom';
+
 export function Discover() {
   return (
     <main>
@@ -10,11 +12,15 @@ export function Discover() {
       <header class="py-3 px-4">
         <div class="d-flex align-items-center w-100">
           <div class="d-flex ms-auto align-items-center gap-3">
-            <a href="savedRecipes.html" class="btn btn-primary">Saved Recipes</a>
-            <a href="randomRecipe.html" class="btn btn-primary">Random Recipe</a>
+            <NavLink to="/savedRecipes" className="btn btn-primary">
+                Saved Recipes
+            </NavLink>
+            <NavLink to="/randomRecipe" className="btn btn-primary">
+                Random Recipe
+            </NavLink>
           </div>
         </div>
-        
+
       </header>
 
       {/* <!-- This section is a placeholder for the WebSocket data -->
@@ -33,7 +39,7 @@ export function Discover() {
                 <div class="d-flex justify-content-center gap-3 mt-3">
                   {/* <!-- In the future, icons could be used to signify action --> */}
                   <a href="" class="btn btn-primary">View</a>
-                  <a href="savedRecipes.html" class="btn btn-outline-secondary">Save</a>
+                  <a href="" class="btn btn-outline-secondary">Save</a>
                 </div>
               </div>
             </div>

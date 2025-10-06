@@ -7,7 +7,7 @@ import { Login } from './login/login';
 import { MyRecipes } from './myRecipes/myRecipes';
 import { Discover } from './discover/discover';
 import { AddRecipe } from './addRecipe/addRecipe';
-import { RandomRecipe } from './randomRecipe/randomRecipe';
+import { RandomRecipe } from './randomRecipe/randomRecipe'
 import { SavedRecipes } from './savedRecipes/savedRecipes';
 import { ViewRecipe } from './viewRecipe/viewRecipe';
 
