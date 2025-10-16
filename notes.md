@@ -104,6 +104,21 @@ The diagrams and prompts helped me better understand how forks and cloning work 
 
 ### HTML & CSS Basics
 
+Breakdown of Each Section
+Section	Purpose
+<!DOCTYPE html>	Declares the document type and version (HTML5).
+<html>	Root element that wraps the entire page.
+<head>	Contains metadata—page title, links to CSS/JS, charset, viewport, etc.
+<body>	Contains everything visible to users.
+<header>	Top part of the page (title, logo, navigation).
+<nav>	Navigation links to main sections.
+<main>	The main content area (unique per page).
+<section>	Logical divisions of content within <main>.
+<article>	A self-contained piece of content (like a blog post).
+<aside>	Side content (ads, related links, sidebar).
+<footer>	Bottom part of the page (copyright, contact info).
+<script>	Runs JavaScript at the bottom of the page (for performance).
+
 ```<link> element (in <head>)```
 - Connects external resources—most often stylesheets.
 - Key attrs: ```rel="stylesheet", href="styles.css", optional media="(min-width:…)".```
