@@ -149,20 +149,92 @@ Flexbox: how images will display (general)
 - Without extra rules, expect a row of images, height aligned by align-items (default stretch has no effect on intrinsic-sized images).
 
 ### DOM & Selectors
-What does getElementById + addEventListener do (general)
+What does ```getElementById``` + ```addEventListener``` do (general)
 - ```document.getElementById('btn')``` returns the element with that id.
 - ```.addEventListener('click', handler)``` runs handler when clicked.
 
 “Using a # selector” (JS line)
-- Likely document.querySelector('#someId'): returns the first element with that id.
+- Likely ```document.querySelector('#someId'):``` returns the first element with that id.
 
 Select element by id and make it green
-```document.getElementById('byu').style.color = 'green';
+```document.getElementById('byu').style.color = 'green';```
 // or:
-document.querySelector('#byu').style.color = 'green';```
+```document.querySelector('#byu').style.color = 'green';```
 
 The DOM—what’s true (quick facts)
 - It’s a live, tree-structured in-memory representation of the page.
 - You can read & modify it (create/remove nodes, edit attributes/styles).
 - It’s not always identical to the original HTML source (scripts can change it).
-- querySelector(All) uses CSS selectors; querySelectorAll returns a static NodeList; getElementsBy* returns live collections.
+- ```querySelector(All)``` uses CSS selectors; ```querySelectorAll``` returns a static NodeList; ```getElementsBy*``` returns live collections.
+
+### HTML Structure & Doctype
+
+Opening tags
+- Paragraph: ```<p>```
+- Ordered list: ```<ol>```
+- Unordered list: ```<ul>```
+- Headings: ```<h1>, <h2>, <h3>```
+
+Declare HTML5 doctype
+- ```<!DOCTYPE html>```
+
+### JavaScript Essentials
+
+Arrow function (declaration)
+- ```const add = (a, b) => a + b;```
+// Concise syntax returns the expression result.
+
+Array .map() output (general)
+- Transforms each element; returns a new array, same length.
+```[1,2,3].map(x => x * 2); // [2,4,6]```
+
+getElementById + addEventListener—sample output
+- ```document.getElementById('btn').addEventListener('click', () => {
+  console.log('clicked');
+});```
+// Clicking #btn logs "clicked"
+
+General if/else/for/while/switch syntax
+```if (cond) { ... } else { ... }
+
+for (let i = 0; i < n; i++) { ... }
+
+while (cond) { ... }
+
+switch (value) {
+  case 'x': ...; break;
+  default: ...
+}```
+
+Create an object; add properties
+```const obj = { a: 1 };
+obj.b = 2;               // Yes, you can add new props dynamically.```
+
+
+Include JavaScript in HTML
+```<script src="app.js" defer></script>
+<!-- or inline -->
+<script>
+  console.log('hi');
+</script>```
+
+Change text “animal” to “crow” (leaving “fish” alone)
+```<p id="animal">animal</p>
+<p>fish</p>
+
+document.getElementById('animal').textContent = 'crow';```
+
+JSON—what it is
+- Text data-interchange format (JavaScript-like literals).
+- Keys must be in double quotes; supports objects, arrays, numbers, strings, booleans, null.
+- Language-agnostic; commonly UTF-8.
+
+For-loop + console.log output (general)
+```for (let i = 0; i < 3; i++) console.log(i);```
+// 0
+// 1
+// 2
+
+Promises & output order (general)
+- Promise executor runs immediately; .then callbacks run as microtasks after current call stack.
+- So sync logs first, then .then logs.
