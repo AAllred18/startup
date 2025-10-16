@@ -211,14 +211,19 @@ Create an object; add properties
 
 
 Include JavaScript in HTML
-```<script src="app.js" defer></script>```
+```
+<script src="app.js" defer></script>
+```
 <!-- or inline -->
-```<script>
+```
+<script>
   console.log('hi');
-</script>```
+</script>
+```
 
 Change text “animal” to “crow” (leaving “fish” alone)
-```<p id="animal">animal</p>
+```
+<p id="animal">animal</p>
 <p>fish</p>
 document.getElementById('animal').textContent = 'crow';
 ```
