@@ -201,7 +201,8 @@ while (cond) { ... }
 switch (value) {
   case 'x': ...; break;
   default: ...
-}```
+}
+```
 
 Create an object; add properties
 ```const obj = { a: 1 };```
@@ -219,7 +220,8 @@ Include JavaScript in HTML
 Change text “animal” to “crow” (leaving “fish” alone)
 ```<p id="animal">animal</p>
 <p>fish</p>
-document.getElementById('animal').textContent = 'crow';```
+document.getElementById('animal').textContent = 'crow';
+```
 
 JSON—what it is
 - Text data-interchange format (JavaScript-like literals).
