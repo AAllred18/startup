@@ -235,10 +235,61 @@ JSON—what it is
 
 For-loop + console.log output (general)
 ```for (let i = 0; i < 3; i++) console.log(i);```
-// 0
-// 1
-// 2
+- // 0
+- // 1
+- // 2
 
 Promises & output order (general)
 - Promise executor runs immediately; .then callbacks run as microtasks after current call stack.
 - So sync logs first, then .then logs.
+
+### Networking, DNS, Security, Ports
+
+Domain parts: banana.fruit.bozo.click
+- TLD: click
+- Root (registered) domain: bozo.click
+- Subdomain: banana.fruit (a nested/stacked subdomain)
+
+HTTPS certificate
+- Required on the server to establish a proper HTTPS (TLS) connection.
+
+DNS A record
+- Maps a name → IPv4 address.
+- It does not point to another A record (for name → name, use CNAME).
+
+Ports
+- 443: HTTPS
+- 80: HTTP
+- 22: SSH
+
+### Unix / Shell Commands
+- chmod – change file/dir permissions.
+- pwd – print working directory.
+- cd – change directory.
+- ls – list files.
+- vim / nano – text editors.
+- mkdir – make directory.
+- mv – move/rename files.
+- rm – remove files (careful!).
+- man – manual pages (help).
+- ssh – remote shell session.
+- ps – show processes.
+- wget – download files.
+- sudo – run command as superuser.
+
+ls -la truth
+- -l: long format (permissions, owner, size, date)
+- -a: includes hidden files (dotfiles)
+
+### Flex Quick Ref (images example)
+```
+.container {
+  display: flex;          /* row by default */
+  flex-wrap: wrap;        /* allow wrapping */
+  gap: 1rem;              /* space between items */
+  justify-content: flex-start; /* horizontal alignment */
+  align-items: center;    /* vertical alignment on cross-axis */
+}
+.container img { max-width: 100%; height: auto; }
+```
+- Items line up in a row, wrap if needed, spacing via gap.
