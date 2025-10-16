@@ -104,16 +104,16 @@ The diagrams and prompts helped me better understand how forks and cloning work 
 
 ### HTML & CSS Basics
 
-<link> element (in <head>)
+```<link> element (in <head>)```
 - Connects external resources—most often stylesheets.
-- Key attrs: rel="stylesheet", href="styles.css", optional media="(min-width:…)".
+- Key attrs: ```rel="stylesheet", href="styles.css", optional media="(min-width:…)".```
 - Void element (no closing tag).
       
-<div> tag
+```<div>``` tag
 - Generic block-level container with no built-in semantics.
 - Used for layout/grouping; add meaning via classes, roles, ARIA.
       
-#title vs .grid selector
+```#title``` vs .grid selector
 - #title targets an id (unique per page, higher specificity).
 - .grid targets a class (reusable, lower specificity).
   
