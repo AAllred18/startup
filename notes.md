@@ -101,38 +101,50 @@ Handling the toggling of the checkboxes was particularly interesting.
 The diagrams and prompts helped me better understand how forks and cloning work on GitHub. I also learned different Markdown styling such as ***this right here***
 
 ## Midterm Review Answers
+
 ### HTML & CSS Basics
+
 <link> element (in <head>)
 - Connects external resources—most often stylesheets.
 - Key attrs: rel="stylesheet", href="styles.css", optional media="(min-width:…)".
 - Void element (no closing tag).
+      
 <div> tag
 - Generic block-level container with no built-in semantics.
 - Used for layout/grouping; add meaning via classes, roles, ARIA.
+      
 #title vs .grid selector
 - #title targets an id (unique per page, higher specificity).
 - .grid targets a class (reusable, lower specificity).
+  
 Padding vs Margin
 - Padding = space inside the border (between content and border).
 - Margin = space outside the border (separates element from neighbors).
+  
 CSS Box Model (inside → out)
 - content → padding → border → margin
+  
 Default span display
 - inline.
+  
 Change all <div> backgrounds to red
 - div { background: red;}
+  
 Image with hyperlink
 - <a href="https://example.com">
       <img src="cat.jpg" alt="Cat">
 </a>
+
 Selecting trouble and not double
 - <p>double <span id="trouble">trouble</span></p>
   #trouble { color: green; }
+  
 Padding shorthand
 - padding: 10px; → all sides 10
 - padding: 10px 20px; → top/bottom 10, left/right 20
 - padding: 5px 10px 15px; → top 5, left/right 10, bottom 15
 - padding: 1px 2px 3px 4px; → top/right/bottom/left (TRBL)
+  
 Flexbox: how images will display (general)
 - In a flex container (display: flex), children (e.g., images) line up along the main axis (row by default), shrink or grow per flex and intrinsic size, wrap if flex-wrap: wrap.
 - Alignment: justify-content (main axis), align-items (cross axis).
