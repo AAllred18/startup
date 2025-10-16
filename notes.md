@@ -131,19 +131,17 @@ Change all <div> backgrounds to red
 - div { background: red;}
   
 Image with hyperlink
-- ```<a href="https://example.com">
-      <img src="cat.jpg" alt="Cat">
-  </a>```
+- ```<a href="https://example.com"> <img src="cat.jpg" alt="Cat"> </a>```
 
 Selecting trouble and not double
-- ```<p>double <span id="trouble">trouble</span></p>
-  #trouble { color: green; }```
+- ```<p>double <span id="trouble">trouble</span></p>```
+  ```#trouble { color: green; }```
   
 Padding shorthand
-- ```padding: 10px; → all sides 10
+- padding: 10px; → all sides 10
 - padding: 10px 20px; → top/bottom 10, left/right 20
 - padding: 5px 10px 15px; → top 5, left/right 10, bottom 15
-- padding: 1px 2px 3px 4px; → top/right/bottom/left (TRBL)```
+- padding: 1px 2px 3px 4px; → top/right/bottom/left (TRBL)
   
 Flexbox: how images will display (general)
 - In a flex container (display: flex), children (e.g., images) line up along the main axis (row by default), shrink or grow per flex and intrinsic size, wrap if flex-wrap: wrap.
