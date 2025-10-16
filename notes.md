@@ -189,39 +189,36 @@ Array .map() output (general)
 ```[1,2,3].map(x => x * 2); // [2,4,6]```
 
 getElementById + addEventListener—sample output
-- ```document.getElementById('btn').addEventListener('click', () => {
-  console.log('clicked');
-});```
+- ```document.getElementById('btn').addEventListener('click', () => {```
+  ```console.log('clicked');```
+```});```
 // Clicking #btn logs "clicked"
 
 General if/else/for/while/switch syntax
 ```if (cond) { ... } else { ... }
-
 for (let i = 0; i < n; i++) { ... }
-
 while (cond) { ... }
-
 switch (value) {
   case 'x': ...; break;
   default: ...
 }```
 
 Create an object; add properties
-```const obj = { a: 1 };
-obj.b = 2;               // Yes, you can add new props dynamically.```
+```const obj = { a: 1 };```
+```obj.b = 2;```
+// Yes, you can add new props dynamically.
 
 
 Include JavaScript in HTML
-```<script src="app.js" defer></script>
+```<script src="app.js" defer></script>```
 <!-- or inline -->
-<script>
+```<script>
   console.log('hi');
 </script>```
 
 Change text “animal” to “crow” (leaving “fish” alone)
 ```<p id="animal">animal</p>
 <p>fish</p>
-
 document.getElementById('animal').textContent = 'crow';```
 
 JSON—what it is
