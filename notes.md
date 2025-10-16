@@ -131,21 +131,40 @@ Change all <div> backgrounds to red
 - div { background: red;}
   
 Image with hyperlink
-- <a href="https://example.com">
+- ```<a href="https://example.com">
       <img src="cat.jpg" alt="Cat">
-</a>
+  </a>```
 
 Selecting trouble and not double
-- <p>double <span id="trouble">trouble</span></p>
-  #trouble { color: green; }
+- ```<p>double <span id="trouble">trouble</span></p>
+  #trouble { color: green; }```
   
 Padding shorthand
-- padding: 10px; → all sides 10
+- ```padding: 10px; → all sides 10
 - padding: 10px 20px; → top/bottom 10, left/right 20
 - padding: 5px 10px 15px; → top 5, left/right 10, bottom 15
-- padding: 1px 2px 3px 4px; → top/right/bottom/left (TRBL)
+- padding: 1px 2px 3px 4px; → top/right/bottom/left (TRBL)```
   
 Flexbox: how images will display (general)
 - In a flex container (display: flex), children (e.g., images) line up along the main axis (row by default), shrink or grow per flex and intrinsic size, wrap if flex-wrap: wrap.
 - Alignment: justify-content (main axis), align-items (cross axis).
 - Without extra rules, expect a row of images, height aligned by align-items (default stretch has no effect on intrinsic-sized images).
+
+### DOM & Selectors
+What does getElementById + addEventListener do (general)
+- ```document.getElementById('btn')``` returns the element with that id.
+- ```.addEventListener('click', handler)``` runs handler when clicked.
+
+“Using a # selector” (JS line)
+- Likely document.querySelector('#someId'): returns the first element with that id.
+
+Select element by id and make it green
+```document.getElementById('byu').style.color = 'green';
+// or:
+document.querySelector('#byu').style.color = 'green';```
+
+The DOM—what’s true (quick facts)
+- It’s a live, tree-structured in-memory representation of the page.
+- You can read & modify it (create/remove nodes, edit attributes/styles).
+- It’s not always identical to the original HTML source (scripts can change it).
+- querySelector(All) uses CSS selectors; querySelectorAll returns a static NodeList; getElementsBy* returns live collections.
