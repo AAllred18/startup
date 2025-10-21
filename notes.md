@@ -128,6 +128,25 @@ Section + Purpose
 ```<div>``` tag
 - Generic block-level container with no built-in semantics.
 - Used for layout/grouping; add meaning via classes, roles, ARIA.
+
+Link tag
+It links an external resource (usually a CSS file) to the HTML document. 
+Example: ```<link rel="stylesheet" href="styles.css">``` applies styles from styles.css to the page.
+
+Wrap the ```&lt;img&gt;`` element with an ```&lt;a&gt;``` tag. Ensure the image file is in the correct folder (public or
+images/) and the src path points to it.
+Example:
+```&lt;a href="https://example.com"&gt;
+&lt;img src="images/logo.png" alt="Logo"&gt;
+&lt;/a&gt;```
+Folder scheme example:
+project/
+index.html
+images/
+logo.png
+css/
+styles.css
+If using a framework, the image may need to be in a 'public' or 'static' folder so it is served directly
       
 ```#title``` vs .grid selector
 - #title targets an id (unique per page, higher specificity).
@@ -139,6 +158,10 @@ Padding vs Margin
   
 CSS Box Model (inside → out)
 - content → padding → border → margin
+- Padding increases size inside border; margin creates space between elements.
+
+Use CSS to change all div elements to have a background of red
+```div { background-color: red; }```
   
 Default span display
 - inline.
@@ -163,6 +186,7 @@ Flexbox: how images will display (general)
 - In a flex container (display: flex), children (e.g., images) line up along the main axis (row by default), shrink or grow per flex and intrinsic size, wrap if flex-wrap: wrap.
 - Alignment: justify-content (main axis), align-items (cross axis).
 - Without extra rules, expect a row of images, height aligned by align-items (default stretch has no effect on intrinsic-sized images).
+- Displayed in a row by default unless flex-direction: column is specified
 
 ### DOM & Selectors
 What does ```getElementById``` + ```addEventListener``` do (general)
@@ -220,6 +244,10 @@ switch (value) {
 }
 ```
 
+What will the following code output when executed using a for loop and console.log?
+```for (let i = 0; i < 3; i++) { console.log(i); }```
+This initializes i=0, checks i<3 each loop, runs body and increments i++ after each iteration
+
 Create an object; add properties
 ```const obj = { a: 1 };```
 ```obj.b = 2;```
@@ -248,6 +276,8 @@ JSON—what it is
 - Text data-interchange format (JavaScript-like literals).
 - Keys must be in double quotes; supports objects, arrays, numbers, strings, booleans, null.
 - Language-agnostic; commonly UTF-8.
+- JSON (JavaScript Object Notation) is a text-based format for structured data using key-value pairs. Example: {
+"name": "John", "age": 25 }
 
 For-loop + console.log output (general)
 ```for (let i = 0; i < 3; i++) console.log(i);```
@@ -258,6 +288,30 @@ For-loop + console.log output (general)
 Promises & output order (general)
 - Promise executor runs immediately; .then callbacks run as microtasks after current call stack.
 - So sync logs first, then .then logs.
+
+Many possibilities depending on promise behavior. Examples:
+1) ```Promise.resolve('Done').then(console.log)``` -> 'Done'
+2) ```Promise.reject('Error').catch(console.error)``` -> 'Error'
+3) ```new Promise(res => setTimeout(() => res('Hi'),1000)).then(console.log)``` -> 'Hi' after 1s
+4) Async function returns value -> printed when awaited or .then
+5) Promise chain: ```Promise.resolve(2).then(x=>x*2).then(x=>x+1).then(console.log)``` -> 5
+6) Reject handled -> shows error via catch.
+
+Arrow functions are a compact function syntax. (a, b) => a + b means a function with parameters a and b that
+returns a+b.
+
+map() transforms every element of an array and returns a new array without mutating the original.
+Examples:
+```const nums = [1,2,3];```
+```const doubled = nums.map(n => n * 2); // [2,4,6]```
+
+Example of getElementByID and addEventListener
+Typical pattern:
+```const btn = document.getElementById('btn');```
+```btn.addEventListener('click', () => console.log('Clicked!'));```
+Behavior: When user clicks the element with id 'btn', the callback runs and prints 'Clicked!'.
+
+```document.querySelector('#title')``` selects the first element that matches the CSS selector #title (element querySelector accepts any CSS selector (classes, attributes, pseudos).
 
 ### Networking, DNS, Security, Ports
 
