@@ -100,7 +100,7 @@ Handling the toggling of the checkboxes was particularly interesting.
 ## Assignment 1 - Github setup
 The diagrams and prompts helped me better understand how forks and cloning work on GitHub. I also learned different Markdown styling such as ***this right here***
 
-## Midterm Review Answers
+## Midterm Review 
 
 ### HTML & CSS Basics
 
