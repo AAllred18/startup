@@ -128,6 +128,7 @@ Section + Purpose
 ```<div>``` tag
 - Generic block-level container with no built-in semantics.
 - Used for layout/grouping; add meaning via classes, roles, ARIA.
+- container element used to group other HTML elements together. It has no visual effect by itself, but helps structure the page for styling and layout using CSS. Commonly used for sections, wrappers, and layout blocks.
 
 Link tag
 It links an external resource (usually a CSS file) to the HTML document. 
@@ -171,6 +172,8 @@ Change all <div> backgrounds to red
   
 Image with hyperlink
 - ```<a href="https://example.com"> <img src="cat.jpg" alt="Cat"> </a>```
+- ```<a href="https://www.example.com"> <img src="images/photo.jpg" alt="Example image"> </a>```
+- project-folder/images/photo.jpg
 
 Selecting trouble and not double
 - ```<p>double <span id="trouble">trouble</span></p>```
