@@ -20,6 +20,72 @@ function RecipeCard({ r, onView, onSave }) {
 }
 
 export function Discover() {
+
+  const navigate = useNavigate();
+
+  // Previous 2 recipes from the 6 laid out 
+  const initial = useMemo(() => ([
+    { id: 'e1', title: 'Chicken Enchilada', totalTime: '35 minutes', difficulty: 'Easy', userName: 'OnoFood18', imageUrl: 'Enchilada.jpeg' },
+    { id: 'm1', title: 'Marry Me Chicken', totalTime: '25 minutes', difficulty: 'Easy', userName: 'Foodie234', imageUrl: 'marrymechicken.jpg' },
+    { id: 'e2', title: 'Chicken Enchilada', totalTime: '35 minutes', difficulty: 'Easy', userName: 'OnoFood18', imageUrl: 'Enchilada.jpeg' },
+    { id: 'm2', title: 'Marry Me Chicken', totalTime: '25 minutes', difficulty: 'Easy', userName: 'Foodie234', imageUrl: 'marrymechicken.jpg' },
+    { id: 'e3', title: 'Chicken Enchilada', totalTime: '35 minutes', difficulty: 'Easy', userName: 'OnoFood18', imageUrl: 'Enchilada.jpeg' },
+    { id: 'm3', title: 'Marry Me Chicken', totalTime: '25 minutes', difficulty: 'Easy', userName: 'Foodie234', imageUrl: 'marrymechicken.jpg' },
+  ]), []);
+
+  // New "shared" recipes , excluding images for now
+  const pool = useMemo(() => ([
+    { title: 'Creamy Garlic Pasta', totalTime: '20 minutes', difficulty: 'Easy', userName: 'foodieOne', imageUrl: 'creamygarlicpasta.jpg' },
+    { title: 'Hawaiian BBQ Chicken', totalTime: '35 minutes', difficulty: 'Medium', userName: 'ILoveFood', imageUrl: 'hawaiianbbqchicken.jpg' },
+    { title: 'Veggie Stir Fry', totalTime: '25 minutes', difficulty: 'Easy', userName: 'GoCougs', imageUrl: 'vegetablestirfry.jpg' },
+    { title: 'Beef Bulgogi Bowls', totalTime: '30 minutes', difficulty: 'Medium', userName: 'Yummyrecipes', imageUrl: 'bulgogi.jpg' },
+    { title: 'Lemon Herb Salmon', totalTime: '22 minutes', difficulty: 'Easy', userName: 'CoolGrandma', imageUrl: 'lemonsalmon.jpg' },
+  ]), []);
+
+  const [recipes, setRecipes] = useState(initial);
+  const [feedStopped, setFeedStopped] = useState(false);
+  const timerRef = useRef(null);
+  const stopTimerRef = useRef(null);
+  const idRef = useRef(1000);
+
+  // Add a new random recipe to the top
+  const pushRandom = () => {
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    const newItem = {
+      id: `r${idRef.current++}`,
+      title: pick.title,
+      totalTime: pick.totalTime,
+      difficulty: pick.difficulty,
+      username: pick.userName,
+      imageUrl: pick.imageUrl,
+    };
+    setRecipes(prev => [newItem, ...prev]);
+  };
+
+  useEffect(() => {
+    // Start adding recipes every 10 seconds
+    timerRef.current = setInterval(() => {
+      pushRandom();
+    }, 10000);
+
+    // Stop adding new recipes after 1 minute
+    stopTimerRef.current = setTimeout(() => {
+      clearInterval(timerRef.current);
+      setFeedStopped(true);
+    }, 60000);
+
+    return () => {
+      clearInterval(timerRef.current);
+      clearTimeout(stopTimerRef.current);
+    };
+  }, []);
+
+  const handleView = (r) => navigate(`/recipes/${r.id}`);
+  const handleSave = (r) => alert(`Saved "${r.title}"`);
+
+  // Responsive grid using Bootstrap
+  const gridClass = 'row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4';
+
   return (
     <main>
       <h1>Discover</h1>
@@ -40,12 +106,38 @@ export function Discover() {
 
       </header>
 
-      {/* <!-- This section is a placeholder for the WebSocket data -->
+      <section className="px-2 pb-5">
+        {recipes.length === 0 ? (
+          <p className="text-center text-muted">No recipes yet. Check back soon!</p>
+        ) : (
+          <div className={gridClass}>
+            {recipes.map((r) => (
+              <div className="col" key={r.id}>
+                <RecipeCard r={r} onView={handleView} onSave={handleSave} />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {feedStopped && (
+          <div className="text-center text-muted mt-4">
+            🔔 The feed has stopped adding new recipes after one minute.
+          </div>
+        )}
+      </section>
+
+    </main>
+  );
+}
+
+// Old layout for 6 recipes that were premade
+
+{/* <!-- This section is a placeholder for the WebSocket data -->
        <!-- Real time recipes shared will appear here --> */}
-      <section>
-        <div class="recipes-container">
-            {/* <!-- Want to make a React card component to cleanly dispay recipe info -->
+      {/* <section> */}
+        {/* <!-- Want to make a React card component to cleanly dispay recipe info -->
              <!-- Placed the same 2 recipes 6 times to show responsive design --> */}
+        {/* <div class="recipes-container">  
             <div class="card recipe-card mb-4 h-100">
               <img src="Enchilada.jpeg" class="card-img-top"/>
               <div class="card-body text-center">
@@ -54,7 +146,7 @@ export function Discover() {
                 <p class="card-text mb-1">Difficulty: Easy</p>
                 <p class="card-text">User: OnoFood18</p>
                 <div class="d-flex justify-content-center gap-3 mt-3">
-                  {/* <!-- In the future, icons could be used to signify action --> */}
+              
                   <a href="" class="btn btn-primary">View</a>
                   <a href="" class="btn btn-outline-secondary">Save</a>
                 </div>
@@ -131,7 +223,4 @@ export function Discover() {
               </div>
             </div>
         </div>
-      </section>
-    </main>
-  );
-}
+      </section> */}
