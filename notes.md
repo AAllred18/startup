@@ -134,12 +134,12 @@ Link tag
 It links an external resource (usually a CSS file) to the HTML document. 
 Example: ```<link rel="stylesheet" href="styles.css">``` applies styles from styles.css to the page.
 
-Wrap the ```&lt;img&gt;`` element with an ```&lt;a&gt;``` tag. Ensure the image file is in the correct folder (public or
+Wrap the &lt;img&gt; element with an &lt;a&gt; tag. Ensure the image file is in the correct folder (public or
 images/) and the src path points to it.
 Example:
-```&lt;a href="https://example.com"&gt;
-&lt;img src="images/logo.png" alt="Logo"&gt;
-&lt;/a&gt;```
+```&lt;a href="https://example.com"&gt;```
+```&lt;img src="images/logo.png" alt="Logo"&gt;```
+```&lt;/a&gt;```
 Folder scheme example:
 project/
 index.html
