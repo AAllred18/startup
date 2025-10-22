@@ -67,3 +67,8 @@ footer {
   border-color: #3C7C79;
   color: #3C7C79;
 }
+
+form:invalid .btn-primary {
+  opacity: 0.6;
+  pointer-events: none; /* optional */
+}
