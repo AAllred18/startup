@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 
-function RecipeCard({ r, onView, onSave }) {
+function SharedRecipeCard({ r, onView, onSave }) {
   return (
     <div className="card recipe-card mb-4 h-100">
       <img src={r.imageUrl} alt={r.title} className="card-img-top" />
@@ -108,7 +108,8 @@ export function Discover() {
           <div className={gridClass}>
             {recipes.map((r) => (
               <div className="col" key={r.id}>
-                <RecipeCard r={r} onView={handleView} onSave={handleSave} />
+                <SharedRecipeCard
+               r={r} onView={handleView} onSave={handleSave} />
               </div>
             ))}
           </div>
