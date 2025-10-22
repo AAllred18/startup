@@ -1,4 +1,44 @@
-import React from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
+const mockFetchRecipeById = async (id) => Promise.resolve({
+  id,
+  title: 'Shoyu Chicken',
+  description: 'Savory soy-based braised chicken.',
+  servings: 4,
+  difficulty: 'Easy',
+  totalTime: 35,
+  ingredients: ['Chicken', 'Shoyu (soy sauce)', 'Brown Sugar', 'Ginger', 'Garlic', 'Water', 'Green Onions'],
+  steps: [
+    'Pat dry the chicken with paper towels.',
+    'Combine shoyu, brown sugar, water, ginger, and garlic in pot.',
+    'Add chicken; simmer 30–45 minutes.',
+    'Optional: Broil to crisp the skin.',
+    'Reduce sauce 5 minutes; serve over rice.',
+  ],
+  imageUrl: 'ShoyuChicken.jpeg',
+});
+
+const mockCreateRecipe = async (payload) => {
+  // Assign an id for backend (mock)
+  return Promise.resolve({ ...payload, id: crypto.randomUUID() });
+};
+
+const mockUpdateRecipe = async (id, payload) => {
+  return Promise.resolve({ ...payload, id });
+};
+
+const emptyForm = {
+  title: '',
+  description: '',
+  servings: '',
+  difficulty: 'Easy',
+  totalTime: '',
+  ingredients: [''], // empty row
+  steps: [''],
+  imageFile: null,
+  imageUrl: '', 
+};
 
 export function AddRecipe() {
   return (

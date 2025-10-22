@@ -73,6 +73,9 @@ export function MyRecipes() {
     e.preventDefault();
   };
 
+  // Temporarily have it output a message when trying to edit or share recipe
+  // Eventually will change addRecipe.jsx to populate with information from recipe
+  // Share button will be linked to the discover page and use websocket
   const onEdit = (r) => alert(`Edit "${r.title}" (wire to /recipes/${r.id}/edit later)`);
   const onShare = (r) => alert(`Share "${r.title}" (POST /api/recipes/${r.id}/share later)`);
 
