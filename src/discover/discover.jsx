@@ -27,19 +27,15 @@ export function Discover() {
   const initial = useMemo(() => ([
     { id: 'e1', title: 'Chicken Enchilada', totalTime: '35 minutes', difficulty: 'Easy', userName: 'OnoFood18', imageUrl: 'Enchilada.jpeg' },
     { id: 'm1', title: 'Marry Me Chicken', totalTime: '25 minutes', difficulty: 'Easy', userName: 'Foodie234', imageUrl: 'marrymechicken.jpg' },
-    { id: 'e2', title: 'Chicken Enchilada', totalTime: '35 minutes', difficulty: 'Easy', userName: 'OnoFood18', imageUrl: 'Enchilada.jpeg' },
-    { id: 'm2', title: 'Marry Me Chicken', totalTime: '25 minutes', difficulty: 'Easy', userName: 'Foodie234', imageUrl: 'marrymechicken.jpg' },
-    { id: 'e3', title: 'Chicken Enchilada', totalTime: '35 minutes', difficulty: 'Easy', userName: 'OnoFood18', imageUrl: 'Enchilada.jpeg' },
-    { id: 'm3', title: 'Marry Me Chicken', totalTime: '25 minutes', difficulty: 'Easy', userName: 'Foodie234', imageUrl: 'marrymechicken.jpg' },
   ]), []);
 
   // New "shared" recipes , excluding images for now
   const pool = useMemo(() => ([
-    { title: 'Creamy Garlic Pasta', totalTime: '20 minutes', difficulty: 'Easy', userName: 'foodieOne', imageUrl: 'creamygarlicpasta.jpg' },
+    { title: 'Creamy Garlic Pasta', totalTime: '20 minutes', difficulty: 'Easy', userName: 'foodieOne', imageUrl: 'creamygarlicpasta.jpeg' },
     { title: 'Hawaiian BBQ Chicken', totalTime: '35 minutes', difficulty: 'Medium', userName: 'ILoveFood', imageUrl: 'hawaiianbbqchicken.jpg' },
-    { title: 'Veggie Stir Fry', totalTime: '25 minutes', difficulty: 'Easy', userName: 'GoCougs', imageUrl: 'vegetablestirfry.jpg' },
-    { title: 'Beef Bulgogi Bowls', totalTime: '30 minutes', difficulty: 'Medium', userName: 'Yummyrecipes', imageUrl: 'bulgogi.jpg' },
-    { title: 'Lemon Herb Salmon', totalTime: '22 minutes', difficulty: 'Easy', userName: 'CoolGrandma', imageUrl: 'lemonsalmon.jpg' },
+    { title: 'Veggie Stir Fry', totalTime: '25 minutes', difficulty: 'Easy', userName: 'GoCougs', imageUrl: 'vegetablestirfry.jpeg' },
+    { title: 'Beef Bulgogi Bowls', totalTime: '30 minutes', difficulty: 'Medium', userName: 'Yummyrecipes', imageUrl: 'bulgogi.jpeg' },
+    { title: 'Lemon Herb Salmon', totalTime: '22 minutes', difficulty: 'Easy', userName: 'CoolGrandma', imageUrl: 'lemonsalmon.jpeg' },
   ]), []);
 
   const [recipes, setRecipes] = useState(initial);
@@ -56,10 +52,10 @@ export function Discover() {
       title: pick.title,
       totalTime: pick.totalTime,
       difficulty: pick.difficulty,
-      username: pick.userName,
+      userName: pick.userName,
       imageUrl: pick.imageUrl,
     };
-    setRecipes(prev => [newItem, ...prev]);
+    setRecipes(prev => [...prev, newItem]);
   };
 
   useEffect(() => {
@@ -83,7 +79,6 @@ export function Discover() {
   const handleView = (r) => navigate(`/recipes/${r.id}`);
   const handleSave = (r) => alert(`Saved "${r.title}"`);
 
-  // Responsive grid using Bootstrap
   const gridClass = 'row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4';
 
   return (
