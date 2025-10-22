@@ -1,6 +1,23 @@
-import React from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
 
-import { NavLink } from 'react-router-dom';
+function RecipeCard({ r, onView, onSave }) {
+  return (
+    <div className="card recipe-card mb-4 h-100">
+      <img src={r.imageUrl} alt={r.title} className="card-img-top" />
+      <div className="card-body text-center">
+        <h4 className="card-title">{r.title}</h4>
+        <p className="card-text mb-1">Prep + Cook: {r.totalTime}</p>
+        <p className="card-text mb-1">Difficulty: {r.difficulty}</p>
+        {r.userName && <p className="card-text">User: {r.userName}</p>}
+        <div className="d-flex justify-content-center gap-3 mt-3">
+          <button className="btn btn-primary" onClick={() => onView(r)}>View</button>
+          <button className="btn btn-outline-secondary" onClick={() => onSave(r)}>Save</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function Discover() {
   return (
