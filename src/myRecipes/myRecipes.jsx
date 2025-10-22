@@ -92,7 +92,7 @@ export function MyRecipes() {
           </div>
 
           <div class="d-flex ms-auto align-items-center gap-3">
-            <NavLink to="/addRecipe" className="btn btn-primary">
+            <NavLink to="/recipe/addRecipe" className="btn btn-primary">
                 Add New Recipe
             </NavLink>
 

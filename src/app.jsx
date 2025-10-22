@@ -7,7 +7,8 @@ import { Login } from './login/login';
 import { AuthState } from './login/authState';
 import { MyRecipes } from './myRecipes/myRecipes';
 import { Discover } from './discover/discover';
-import { AddRecipe } from './addRecipe/addRecipe';
+import { AddRecipe } from './recipe/addRecipe';
+import { EditRecipe } from './recipe/editRecipe';
 import { RandomRecipe } from './randomRecipe/randomRecipe'
 import { SavedRecipes } from './savedRecipes/savedRecipes';
 import { ViewRecipe } from './viewRecipe/viewRecipe';
@@ -65,10 +66,10 @@ export default function App() {
                     }
                     exact
                 />
-                // ...
                 <Route path='/myRecipes' element={<MyRecipes />} />
                 <Route path='/discover' element={<Discover />} />
-                <Route path="/addRecipe" element={<AddRecipe />} />
+                <Route path="/recipe/addRecipe" element={<AddRecipe />} />
+                <Route path="/recipe/:id/edit" element={<EditRecipe />} />
                 <Route path='/randomRecipe' element={<RandomRecipe />} />
                 <Route path='/savedRecipes' element={<SavedRecipes />} />
                 <Route path="/viewRecipe" element={<ViewRecipe />} />
