@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import '../recipes.css'
@@ -7,7 +7,6 @@ async function mockFetchMyRecipes() {
   return Promise.resolve([
     { id: 'r1', title: 'Shoyu Chicken', totalTime: '35 minutes', difficulty: 'Easy', imageUrl: 'ShoyuChicken.jpeg' },
     { id: 'r2', title: 'Fried Rice',     totalTime: '20 minutes', difficulty: 'Easy', imageUrl: 'FriedRice.jpeg'  },
-    { id: 'r3', title: 'Teri Beef',      totalTime: '30 minutes', difficulty: 'Medium', imageUrl: 'teribeef.jpg'  },
   ]);
 }
 
@@ -45,6 +44,39 @@ export function MyRecipes() {
   const [err, setErr] = useState(null);
   const [query, setQuery] = useState('');
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        setErr(null);
+
+        // API call goes here later
+
+        const data = await mockFetchMyRecipes();
+        const normalized = data.map(normalizeRecipe);
+
+        if (!cancelled) setRecipes(normalized);
+      } catch (e) {
+        if (!cancelled) setErr('Failed to load your recipes.');
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const filtered = useMemo(() => {
+    if (!query.trim()) return recipes;
+    const q = query.trim().toLowerCase();
+    return recipes.filter(r => r.title.toLowerCase().includes(q));
+  }, [recipes, query]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+  };
+
+  const onEdit = (r) => alert(`Edit "${r.title}" (wire to /recipes/${r.id}/edit later)`);
+  const onShare = (r) => alert(`Share "${r.title}" (POST /api/recipes/${r.id}/share later)`);
+
+
   return (
     <main>
       <h1 class="text-center py-3">My Recipes</h1>
@@ -61,16 +93,52 @@ export function MyRecipes() {
                 Add New Recipe
             </NavLink>
 
-            <form class="d-flex align-items-center gap-2 m-0">
-              <input id="q" name="q" type="search" class="form-control" placeholder="Search by Recipe Name"/>
-              <button type="submit" class="btn btn-outline-secondary">Search</button>
+             <form className="d-flex align-items-center gap-2 m-0" onSubmit={handleSearchSubmit}>
+              {/* Search for recipe */}
+              <input
+                id="q"
+                name="q"
+                type="search"
+                className="form-control"
+                placeholder="Search by Recipe Name"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <button type="submit" className="btn btn-outline-secondary">Search</button>
             </form>
           </div>
         </div>
         
       </header>
 
+      {err && (
+        <div className="container">
+          <div className="alert alert-danger" role="alert">{err}</div>
+        </div>
+      )}
+
       <section>
+        <div className="recipes-container">
+          {!err && filtered.length === 0 && (
+            <p className="text-muted text-center w-100">No recipes found.</p>
+          )}
+
+          {filtered.map((recipe) => (
+            <MyRecipeCard
+              key={recipe.id}
+              recipe={recipe}
+              onEdit={onEdit}
+              onShare={onShare}
+            />
+          ))}
+        </div>
+      </section>
+
+    </main>
+  );
+}
+
+{/* <section>
         <div class="recipes-container">
         
           <div class="card mb-4">
@@ -188,8 +256,4 @@ export function MyRecipes() {
           </div>
 
         </div>
-      </section>
-
-    </main>
-  );
-}
+      </section> */}
