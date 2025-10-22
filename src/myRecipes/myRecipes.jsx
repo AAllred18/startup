@@ -1,7 +1,12 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 import '../recipes.css'
+
+function loadLocalRecipes() {
+  try { return JSON.parse(localStorage.getItem('myRecipes_local') || '[]'); }
+  catch { return []; }
+}
 
 async function mockFetchMyRecipes() {
   return Promise.resolve([
@@ -53,9 +58,18 @@ export function MyRecipes() {
         // API call goes here later
 
         const data = await mockFetchMyRecipes();
-        const normalized = data.map(normalizeRecipe);
+        const normalizedServer = data.map(normalizeRecipe);
 
-        if (!cancelled) setRecipes(normalized);
+        // For now load local recipes until they are saved on the DB and can be retrieved here
+        const local = loadLocalRecipes().map(normalizeRecipe);
+
+        const mergedById = new Map();
+        for (const r of [...local, ...normalizedServer]) {
+          mergedById.set(r.id, r);
+        }
+        const merged = Array.from(mergedById.values());
+
+        if (!cancelled) setRecipes(merged);
       } catch (e) {
         if (!cancelled) setErr('Failed to load your recipes.');
       }
