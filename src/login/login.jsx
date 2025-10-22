@@ -1,36 +1,58 @@
 import React from 'react';
 
-export function Login() {
-  return (
-    <main>
-      <h1 className="text-center">Welcome to ShareABite</h1>
-    
-      <img src="logo.png" style={{ width: '250px', height: 'auto', borderRadius: '25%' }}/>
-      <h3 className="text-center">Where recipes bring people together!</h3>
+import { Unauthenticated } from './unauthenticated';
+import { Authenticated } from './authenticated';
+import { AuthState } from './authState';
 
-  
-      <div className="p-3 my-2" 
-        style={{
-          backgroundColor: '#F4EADC',
-          borderRadius: '5%',
-          maxWidth: '500px',
-          padding: '4rem',
-        }}>
-        <p className="fw-semibold">Sign in or create an account to get started!</p>
-        <form method="get" action="recipes.html">
-          <div className="input-group mb-3">
-            <span className="input-group-text">Email</span>
-            <input type="email" placeholder="your@email.com" className="form-control"/>
+export function Login({ userName, authState, onAuthChange }) {
+  const handleLogin = (loginUserName) => {
+    onAuthChange(loginUserName, AuthState.Authenticated);
+  };
+
+  const handleLogout = () => {
+    onAuthChange(userName, AuthState.Unauthenticated);
+  };
+
+  const panelStyle = {
+    backgroundColor: '#F4EADC',
+    borderRadius: '5%',
+    maxWidth: '500px',
+    padding: '4rem',
+  };
+
+  return (
+    <main className="container d-flex flex-column align-items-center gap-3 py-4">
+      {authState !== AuthState.Unknown && (
+        <>
+          <h1 className="text-center m-0">Welcome to ShareABite</h1>
+          <img
+            src="logo.png"
+            alt="ShareABite logo"
+            style={{ width: '250px', height: 'auto', borderRadius: '25%' }}
+          />
+          <h3 className="text-center">Where recipes bring people together!</h3>
+        </>
+      )}
+
+      <div className="w-100 d-flex justify-content-center">
+        {authState === AuthState.Authenticated && (
+          <div className="w-100 d-flex justify-content-center">
+            <div className="w-100" style={{ maxWidth: '900px' }}>
+              <Authenticated userName={userName} onLogout={handleLogout} />
+            </div>
           </div>
-          <div className="input-group mb-3">
-            <span className="input-group-text">Password</span>
-            <input type="password" placeholder="password" className="form-control"/>
+        )}
+
+        {authState === AuthState.Unauthenticated && (
+          <div className="p-3 my-2 w-70 d-flex justify-content-center">
+            <div style={panelStyle} className="w-100 d-flex flex-column align-items-stretch">
+              <Unauthenticated
+                userName={userName}
+                onLogin={handleLogin}
+              />
+            </div>
           </div>
-          <div className="d-flex gap-2 justify-content-center">
-            <button type="submit" className="btn btn-primary">Login</button>
-            <button type="submit" className="btn btn-outline-secondary">Create</button>
-          </div>
-        </form>
+        )}
       </div>
     </main>
   );
