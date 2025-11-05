@@ -26,6 +26,9 @@ var apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
 // These functions will be the same that I require for entrance into my application
+
+// CODE FOR USER AUTHENTICATION
+
 // CreateAuth a new user
 apiRouter.post('/auth/create', async (req, res) => {
   if (await findUser('email', req.body.email)) {
