@@ -38,7 +38,7 @@ export function Login({ userName, authState, onAuthChange }) {
         {authState === AuthState.Authenticated && (
           <div className="w-100 d-flex justify-content-center">
             <div className="w-100" style={{ maxWidth: '900px' }}>
-              <Authenticated userName={userName} onLogout={handleLogout} />
+              <Authenticated userName={userName} onLogout={() => onAuthChange(userName, AuthState.Unauthenticated)} />
             </div>
           </div>
         )}
@@ -48,7 +48,9 @@ export function Login({ userName, authState, onAuthChange }) {
             <div style={panelStyle} className="w-100 d-flex flex-column align-items-stretch">
               <Unauthenticated
                 userName={userName}
-                onLogin={handleLogin}
+                onLogin={(loginUserName) => {
+                onAuthChange(loginUserName, AuthState.Authenticated);
+              }}
               />
             </div>
           </div>
