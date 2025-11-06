@@ -132,7 +132,7 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] **Static middleware for frontend** - Using the simon example, I created static middleware for frontend.
 - [x] **Calls to third party endpoints** - I call to a third party endpoint that returns a random recipe on the discover page.
 - [x] **Backend service endpoints** - To keep things simple, I am mainly creating funcionality for building your own recipe DB (add, edit, delete, share) and sharing recipes with others. I would love to build out several other funcionalities like liking and saving shared recipes,  but that will be for another day! 
-- [ ] **Frontend calls service endpoints** - I did not complete this part of the deliverable.
+- [x] **Frontend calls service endpoints** - I completed calls in the frontend for services such as recipe add, edit, delete, and share. 
 - [x] **Supports registration, login, logout, and restricted endpoint** - Using the simon example, I created a system that supports registration, login, logout, and restricted endpoints. 
 
 
