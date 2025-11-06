@@ -117,12 +117,44 @@ function ensureString(v, fallback = '') {
   return (typeof v === 'string' && v.trim()) ? v.trim() : fallback;
 }
 
+function ensureNumber(v, fallback = 0) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function ensureArrayOfStrings(v, fallback = []) {
+  if (!Array.isArray(v)) return fallback;
+  return v.map(x => (typeof x === 'string' ? x.trim() : ''))
+          .filter(Boolean);
+}
+
+// Keep card contract simple: cards show a string like "25 minutes" or "—"
+function toMinutesString(v, fallback = '—') {
+  if (v === null || v === undefined) return fallback;
+  // accept 25 or "25", otherwise pass through a trimmed string
+  const n = Number(v);
+  if (Number.isFinite(n) && n >= 0) return `${n} minutes`;
+  const s = String(v).trim();
+  return s || fallback;
+}
+
 function normalizeRecipeInput(body, defaults = {}) {
   return {
-    title: ensureString(body.title, defaults.title ?? 'Untitled'),
-    totalTime: ensureString(body.totalTime, defaults.totalTime ?? '—'),
+    title:      ensureString(body.title,      defaults.title ?? 'Untitled'),
+    totalTime:  toMinutesString(
+      body.totalTime !== undefined ? body.totalTime : defaults.totalTime,
+      defaults.totalTime ?? '—'
+    ),
     difficulty: ensureString(body.difficulty, defaults.difficulty ?? '—'),
-    imageUrl: ensureString(body.imageUrl, defaults.imageUrl ?? 'placeholder.jpg'),
+    imageUrl:   ensureString(body.imageUrl,   defaults.imageUrl ?? 'placeholder.jpg'),
+    description: ensureString(body.description, defaults.description ?? ''),
+    servings:    ensureNumber(body.servings,   defaults.servings ?? 0),
+    ingredients: ensureArrayOfStrings(
+      body.ingredients ?? defaults.ingredients ?? []
+    ),
+    steps:       ensureArrayOfStrings(
+      body.steps ?? defaults.steps ?? []
+    ),
   };
 }
 
@@ -169,7 +201,6 @@ apiRouter.put('/recipes/:id', verifyAuth, (req, res) => {
   if (!r || r.ownerEmail !== req.user.email) {
     return res.status(404).send({ msg: 'Not found' });
   }
-
   const updated = { ...r, ...normalizeRecipeInput(req.body, r) };
   recipes.set(r.id, updated);
   res.send(updated);

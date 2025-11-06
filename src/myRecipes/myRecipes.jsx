@@ -11,6 +11,14 @@ export function MyRecipes() {
   const [userEmail, setUserEmail] = useState('');
   const navigate = useNavigate();
 
+  const toCard = (r) => ({
+    id: r.id,
+    title: r.title ?? 'Untitled',
+    totalTime: r.totalTime ?? '—',
+    difficulty: r.difficulty ?? '—',
+    imageUrl: r.imageUrl ?? 'placeholder.jpg',
+  });
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -27,7 +35,7 @@ export function MyRecipes() {
         const r = await fetch('/api/recipes', { credentials: 'include' });
         if (!r.ok) throw new Error('Failed to load your recipes.');
         const data = await r.json();
-        if (!cancelled) setRecipes(data);
+        if (!cancelled) setRecipes(data.map(toCard));
       } catch (e) {
         if (!cancelled) setErr(e.message || 'Failed to load your recipes.');
       } finally {
