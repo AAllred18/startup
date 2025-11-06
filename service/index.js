@@ -105,6 +105,10 @@ async function findUser(field, value) {
   return users.find((u) => u[field] === value);
 }
 
+apiRouter.get('/user', verifyAuth, (req, res) => {
+  res.send({ email: req.user.email });
+});
+
 // CODE FOR USERS PERSONAL RECIPES (Fetch Recipes, ADD, EDIT, DELETE)
 
 const recipes = new Map(); // id -> recipe
@@ -122,8 +126,25 @@ function normalizeRecipeInput(body, defaults = {}) {
   };
 }
 
+// Seed data to auto show 2 recipes in their library when they login/create
+function seedForUser(email) {
+  const alreadyHas = Array.from(recipes.values()).some(r => r.ownerEmail === email);
+  if (alreadyHas) return;
+
+  const starter = [
+    { title: 'Shoyu Chicken', totalTime: '35 minutes', difficulty: 'Easy', imageUrl: 'ShoyuChicken.jpeg' },
+    { title: 'Fried Rice',     totalTime: '20 minutes', difficulty: 'Easy', imageUrl: 'FriedRice.jpeg'  },
+  ];
+
+  for (const s of starter) {
+    const id = uuid.v4();
+    recipes.set(id, { id, ownerEmail: email, ...s });
+  }
+}
+
 // Send all recipes over that are connected to the owner
 apiRouter.get('/recipes', verifyAuth, (req, res) => {
+  seedForUser(req.user.email);
   const mine = Array.from(recipes.values()).filter(r => r.ownerEmail === req.user.email);
   res.send(mine);
 });

@@ -1,136 +1,79 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-
+import { RecipeCard } from '../../components/RecipeCard';
 import '../recipes.css'
-
-function loadLocalRecipes() {
-  try { return JSON.parse(localStorage.getItem('myRecipes_local') || '[]'); }
-  catch { return []; }
-}
-
-async function mockFetchMyRecipes() {
-  return Promise.resolve([
-    { id: 'r1', title: 'Shoyu Chicken', totalTime: '35 minutes', difficulty: 'Easy', imageUrl: 'ShoyuChicken.jpeg' },
-    { id: 'r2', title: 'Fried Rice',     totalTime: '20 minutes', difficulty: 'Easy', imageUrl: 'FriedRice.jpeg'  },
-  ]);
-}
-
-async function createRecipe(payload) {
-  const res = await fetch('/api/recipes', {
-    method: 'POST',
-    credentials: 'include',                // send cookie
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-
-  if (res.status === 401) {
-    throw new Error('You must be logged in to add a recipe.');
-  }
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(text || 'Failed to create recipe');
-  }
-
-  return res.json();                       // -> { id, ownerEmail, title, totalTime, difficulty, imageUrl }
-}
-
-function normalizeRecipe(r) {
-  return {
-    id: r.id,
-    title: r.title ?? 'Untitled',
-    totalTime: r.totalTime ?? '—',
-    difficulty: r.difficulty ?? '—',
-    imageUrl: r.imageUrl ?? 'placeholder.jpg',
-  };
-}
-
-function MyRecipeCard({ recipe, onEdit, onShare }) {
-  return (
-    <div className="card mb-4 h-100">
-      <img src={recipe.imageUrl} alt={recipe.title} className="card-img-top" />
-      <div className="card-body text-center">
-        <h4 className="card-title">{recipe.title}</h4>
-        <p className="card-text mb-1">Prep + Cook: {recipe.totalTime}</p>
-        <p className="card-text">Difficulty: {recipe.difficulty}</p>
-        <div className="d-flex justify-content-center gap-3 mt-3">
-          {/* When you move to dynamic routes, switch to: `/recipes/${recipe.id}` */}
-          <NavLink to="/viewRecipe" className="btn btn-primary">View</NavLink>
-          <button className="btn btn-outline-secondary" onClick={() => onEdit?.(recipe)}>Edit</button>
-          <button className="btn btn-outline-secondary" onClick={() => onShare?.(recipe)}>Share</button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export function MyRecipes() {
   const [recipes, setRecipes] = useState([]);
   const [err, setErr] = useState(null);
   const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
+        setLoading(true);
         setErr(null);
-
-        // API call goes here later
-
-        const data = await mockFetchMyRecipes();
-        const normalizedServer = data.map(normalizeRecipe);
-
-        // For now load local recipes until they are saved on the DB and can be retrieved here
-        const local = loadLocalRecipes().map(normalizeRecipe);
-
-        const mergedById = new Map();
-        for (const r of [...local, ...normalizedServer]) {
-          mergedById.set(r.id, r);
+        // Fetch username
+        const userRes = await fetch('/api/user', { credentials: 'include' });
+        if (userRes.ok) {
+          const user = await userRes.json();
+          if (!cancelled) setUserEmail(user.email);
         }
-        const merged = Array.from(mergedById.values());
-
-        if (!cancelled) setRecipes(merged);
+        // Fetch recipes
+        const r = await fetch('/api/recipes', { credentials: 'include' });
+        if (!r.ok) throw new Error('Failed to load your recipes.');
+        const data = await r.json();
+        if (!cancelled) setRecipes(data);
       } catch (e) {
-        if (!cancelled) setErr('Failed to load your recipes.');
+        if (!cancelled) setErr(e.message || 'Failed to load your recipes.');
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     })();
     return () => { cancelled = true; };
   }, []);
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return recipes;
     const q = query.trim().toLowerCase();
-    return recipes.filter(r => r.title.toLowerCase().includes(q));
+    return q ? recipes.filter(r => (r.title || '').toLowerCase().includes(q)) : recipes;
   }, [recipes, query]);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
+  const onEdit = (recipe) => {
+    navigate(`/recipe/edit/${recipe.id}`, { state: { recipe } });
   };
 
-  // Temporarily have it output a message when trying to edit or share recipe
-  // Eventually will change addRecipe.jsx to populate with information from recipe
-  // Share button will be linked to the discover page and use websocket
-  const onEdit = (r) => alert(`Edit "${r.title}" (wire to /recipes/${r.id}/edit later)`);
-  const onShare = (r) => alert(`Share "${r.title}" (POST /api/recipes/${r.id}/share later)`);
-
+  const onShare = async (recipe) => {
+    try {
+      const r = await fetch(`/api/recipes/${recipe.id}/share`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (!r.ok) throw new Error('Share failed');
+      alert(`Shared "${recipe.title}"`);
+    } catch (e) {
+      alert(e.message || 'Share failed');
+    }
+  };
 
   return (
     <main>
-      <h1 class="text-center py-3">My Recipes</h1>
-      <h4 class="text-center">Store all of your recipes here!</h4>
+      <h1 className="text-center py-3">My Recipes</h1>
+      <h4 className="text-center">Store all of your recipes here!</h4>
 
-      <header class="py-3 px-4">
-        <div class="d-flex align-items-center w-100">
-          <div class="fw-semibold me-3">
-            User: NewUser
+      <header className="py-3 px-4">
+        <div className="d-flex align-items-center w-100">
+          <div className="fw-semibold me-3">
+            {userEmail ? `User: ${userEmail}` : 'User: (not logged in)'}
           </div>
-
-          <div class="d-flex ms-auto align-items-center gap-3">
+          <div className="d-flex ms-auto align-items-center gap-3">
             <NavLink to="/recipe/addRecipe" className="btn btn-primary">
-                Add New Recipe
+              Add New Recipe
             </NavLink>
-
-             <form className="d-flex align-items-center gap-2 m-0" onSubmit={handleSearchSubmit}>
-              {/* Search for recipe */}
+            <form className="d-flex align-items-center gap-2 m-0" onSubmit={(e)=>e.preventDefault()}>
               <input
                 id="q"
                 name="q"
@@ -144,7 +87,6 @@ export function MyRecipes() {
             </form>
           </div>
         </div>
-        
       </header>
 
       {err && (
@@ -153,14 +95,16 @@ export function MyRecipes() {
         </div>
       )}
 
-      <section>
+      <section className="px-3">
+        {loading && <p className="text-center text-muted">Loading recipes…</p>}
+
         <div className="recipes-container">
-          {!err && filtered.length === 0 && (
+          {!loading && !err && filtered.length === 0 && (
             <p className="text-muted text-center w-100">No recipes found.</p>
           )}
 
           {filtered.map((recipe) => (
-            <MyRecipeCard
+            <RecipeCard
               key={recipe.id}
               recipe={recipe}
               onEdit={onEdit}
@@ -169,7 +113,68 @@ export function MyRecipes() {
           ))}
         </div>
       </section>
-
     </main>
   );
 }
+
+// Previous code for recipes we were saving on localstorage
+
+// function loadLocalRecipes() {
+//   try { return JSON.parse(localStorage.getItem('myRecipes_local') || '[]'); }
+//   catch { return []; }
+// }
+
+// async function mockFetchMyRecipes() {
+//   return Promise.resolve([
+//     { id: 'r1', title: 'Shoyu Chicken', totalTime: '35 minutes', difficulty: 'Easy', imageUrl: 'ShoyuChicken.jpeg' },
+//     { id: 'r2', title: 'Fried Rice',     totalTime: '20 minutes', difficulty: 'Easy', imageUrl: 'FriedRice.jpeg'  },
+//   ]);
+// }
+
+// async function createRecipe(payload) {
+//   const res = await fetch('/api/recipes', {
+//     method: 'POST',
+//     credentials: 'include',                // send cookie
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(payload),
+//   });
+
+//   if (res.status === 401) {
+//     throw new Error('You must be logged in to add a recipe.');
+//   }
+//   if (!res.ok) {
+//     const text = await res.text().catch(() => '');
+//     throw new Error(text || 'Failed to create recipe');
+//   }
+
+//   return res.json();                       // -> { id, ownerEmail, title, totalTime, difficulty, imageUrl }
+// }
+
+// function normalizeRecipe(r) {
+//   return {
+//     id: r.id,
+//     title: r.title ?? 'Untitled',
+//     totalTime: r.totalTime ?? '—',
+//     difficulty: r.difficulty ?? '—',
+//     imageUrl: r.imageUrl ?? 'placeholder.jpg',
+//   };
+// }
+
+// function MyRecipeCard({ recipe, onEdit, onShare }) {
+//   return (
+//     <div className="card mb-4 h-100">
+//       <img src={recipe.imageUrl} alt={recipe.title} className="card-img-top" />
+//       <div className="card-body text-center">
+//         <h4 className="card-title">{recipe.title}</h4>
+//         <p className="card-text mb-1">Prep + Cook: {recipe.totalTime}</p>
+//         <p className="card-text">Difficulty: {recipe.difficulty}</p>
+//         <div className="d-flex justify-content-center gap-3 mt-3">
+//           {/* When you move to dynamic routes, switch to: `/recipes/${recipe.id}` */}
+//           <NavLink to="/viewRecipe" className="btn btn-primary">View</NavLink>
+//           <button className="btn btn-outline-secondary" onClick={() => onEdit?.(recipe)}>Edit</button>
+//           <button className="btn btn-outline-secondary" onClick={() => onShare?.(recipe)}>Share</button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
