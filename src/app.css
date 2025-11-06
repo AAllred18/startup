@@ -67,6 +67,16 @@ footer {
   border-color: #3C7C79;
   color: #3C7C79;
 }
+.btn-outline-primary{
+  background-color: white;
+  border-color: #3C7C79;
+  color: #3C7C79;
+}
+.btn-outline-primary:hover{
+  background-color: #3C7C79;
+  border-color: white;
+  color: white;
+}
 
 form:invalid .btn-primary {
   opacity: 0.6;

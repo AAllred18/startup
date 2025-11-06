@@ -15,6 +15,25 @@ async function mockFetchMyRecipes() {
   ]);
 }
 
+async function createRecipe(payload) {
+  const res = await fetch('/api/recipes', {
+    method: 'POST',
+    credentials: 'include',                // send cookie
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (res.status === 401) {
+    throw new Error('You must be logged in to add a recipe.');
+  }
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(text || 'Failed to create recipe');
+  }
+
+  return res.json();                       // -> { id, ownerEmail, title, totalTime, difficulty, imageUrl }
+}
+
 function normalizeRecipe(r) {
   return {
     id: r.id,

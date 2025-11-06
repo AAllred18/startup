@@ -69,6 +69,7 @@ apiRouter.delete('/auth/logout', async (req, res) => {
 const verifyAuth = async (req, res, next) => {
   const user = await findUser('token', req.cookies[authCookieName]);
   if (user) {
+    req.user = user;  
     next();
   } else {
     res.status(401).send({ msg: 'Unauthorized' });

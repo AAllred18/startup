@@ -86,7 +86,7 @@ export function RandomRecipe() {
               <p className="card-text mb-1">Difficulty: {recipe.difficulty}</p>
 
               <div className="d-flex justify-content-center gap-2 mt-3">
-                <button className="btn btn-outline-secondary" onClick={getRandomRecipe}>
+                <button className="btn btn-outline-primary" onClick={getRandomRecipe}>
                   Try Another
                 </button>
                 <button className="btn btn-secondary" onClick={() => setShowDetails(true)}>
