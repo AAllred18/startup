@@ -104,6 +104,77 @@ async function findUser(field, value) {
   return users.find((u) => u[field] === value);
 }
 
+// CODE FOR USERS PERSONAL RECIPES (Fetch Recipes, ADD, EDIT, DELETE)
+
+const recipes = new Map(); // id -> recipe
+
+function ensureString(v, fallback = '') {
+  return (typeof v === 'string' && v.trim()) ? v.trim() : fallback;
+}
+
+function normalizeRecipeInput(body, defaults = {}) {
+  return {
+    title: ensureString(body.title, defaults.title ?? 'Untitled'),
+    totalTime: ensureString(body.totalTime, defaults.totalTime ?? '—'),
+    difficulty: ensureString(body.difficulty, defaults.difficulty ?? '—'),
+    imageUrl: ensureString(body.imageUrl, defaults.imageUrl ?? 'placeholder.jpg'),
+  };
+}
+
+// Send all recipes over that are connected to the owner
+apiRouter.get('/recipes', verifyAuth, (req, res) => {
+  const mine = Array.from(recipes.values()).filter(r => r.ownerEmail === req.user.email);
+  res.send(mine);
+});
+
+// Create a new recipe for the logged-in user
+apiRouter.post('/recipes', verifyAuth, (req, res) => {
+  const data = normalizeRecipeInput(req.body);
+  const id = uuid.v4();
+
+  const recipe = {
+    id,
+    ownerEmail: req.user.email,
+    ...data,
+  };
+  recipes.set(id, recipe);
+  res.status(201).send(recipe);
+});
+
+// Edit current recipes based off of their id
+apiRouter.put('/recipes/:id', verifyAuth, (req, res) => {
+  const r = recipes.get(req.params.id);
+  if (!r || r.ownerEmail !== req.user.email) {
+    return res.status(404).send({ msg: 'Not found' });
+  }
+
+  const updated = { ...r, ...normalizeRecipeInput(req.body, r) };
+  recipes.set(r.id, updated);
+  res.send(updated);
+});
+
+apiRouter.delete('/recipes/:id', verifyAuth, (req, res) => {
+  const r = recipes.get(req.params.id);
+  if (!r || r.ownerEmail !== req.user.email) {
+    return res.status(404).send({ msg: 'Not found' });
+  }
+
+  recipes.delete(r.id);
+  res.status(204).end();
+});
+
+// "Share" stub (for later WebSocket feature)
+apiRouter.post('/recipes/:id/share', verifyAuth, (req, res) => {
+  const r = recipes.get(req.params.id);
+  if (!r || r.ownerEmail !== req.user.email) {
+    return res.status(404).send({ msg: 'Not found' });
+  }
+
+  res.send({ ok: true, id: r.id, shared: true });
+});
+
+
+
 // setAuthCookie in the HTTP response
 function setAuthCookie(res, authToken) {
   res.cookie(authCookieName, authToken, {
