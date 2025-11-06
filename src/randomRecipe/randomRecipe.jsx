@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Popup } from '../../components/Popup';
 
-// Simple mapper with fixed time/difficulty (minimal + reliable)
 function mapMealToCard(meal) {
   return {
     id: Number(meal.idMeal),
     title: meal.strMeal,
+    // Hardcoded these things because the 3rd party call does not include time or difficulty
     totalTime: '30 minutes',
     difficulty: 'Medium',
     imageUrl: meal.strMealThumb,
