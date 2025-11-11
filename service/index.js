@@ -164,8 +164,10 @@ function seedForUser(email) {
   if (alreadyHas) return;
 
   const starter = [
-    { title: 'Shoyu Chicken', totalTime: '35 minutes', difficulty: 'Easy', imageUrl: 'ShoyuChicken.jpeg' },
-    { title: 'Fried Rice',     totalTime: '20 minutes', difficulty: 'Easy', imageUrl: 'FriedRice.jpeg'  },
+    { title: 'Shoyu Chicken', totalTime: '35 minutes', difficulty: 'Easy', imageUrl: 'ShoyuChicken.jpeg',
+      ingredients: ['Chicken','Shoyu','Sugar'], steps: ['Combine','Simmer'] },
+    { title: 'Fried Rice', totalTime: '20 minutes', difficulty: 'Easy', imageUrl: 'FriedRice.jpeg',
+      ingredients: ['Rice','Eggs','Veggies'], steps: ['Stir fry','Season'] },
   ];
 
   for (const s of starter) {
@@ -177,7 +179,13 @@ function seedForUser(email) {
 // Send all recipes over that are connected to the owner
 apiRouter.get('/recipes', verifyAuth, (req, res) => {
   seedForUser(req.user.email);
-  const mine = Array.from(recipes.values()).filter(r => r.ownerEmail === req.user.email);
+  const mine = Array.from(recipes.values())
+    .filter(r => r.ownerEmail === req.user.email)
+    .map(r => ({
+      ...r,
+      ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
+      steps: Array.isArray(r.steps) ? r.steps : [],
+    }));
   res.send(mine);
 });
 
@@ -198,10 +206,12 @@ apiRouter.post('/recipes', verifyAuth, (req, res) => {
 // Get a single recipe by id 
 apiRouter.get('/recipes/:id', verifyAuth, (req, res) => {
   const r = recipes.get(req.params.id);
-  if (!r || r.ownerEmail !== req.user.email) {
-    return res.status(404).send({ msg: 'Not found' });
-  }
-  res.send(r);
+  if (!r || r.ownerEmail !== req.user.email) return res.status(404).send({ msg: 'Not found' });
+  res.send({
+    ...r,
+    ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
+    steps: Array.isArray(r.steps) ? r.steps : [],
+  });
 });
 
 // Edit current recipes based off of their id

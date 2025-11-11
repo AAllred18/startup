@@ -24,7 +24,7 @@ export function RecipeCard({
         <p className="card-text">Difficulty: {difficulty}</p>
 
         <div className="d-flex justify-content-center gap-3 mt-3 flex-wrap">
-          <NavLink to={viewTo} state={{ recipe }} className="btn btn-primary">
+          <NavLink to={`/recipe/${recipe.id}`} state={{ recipe }} className="btn btn-primary">
             View
           </NavLink>
 

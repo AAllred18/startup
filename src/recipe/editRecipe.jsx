@@ -1,4 +1,3 @@
-// EditRecipe.jsx
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import RecipeForm from './recipeForm';
@@ -24,10 +23,7 @@ async function apiUpdateRecipe(id, payload) {
 }
 
 async function apiDeleteRecipe(id) {
-  const res = await fetch(`/api/recipes/${id}`, {
-    method: 'DELETE',
-    credentials: 'include',
-  });
+  const res = await fetch(`/api/recipes/${id}`, { method: 'DELETE', credentials: 'include' });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err?.msg || 'Delete failed');
@@ -41,13 +37,12 @@ function normalizeForForm(r = {}) {
     const m = String(v).match(/\d+/);
     return m ? Number(m[0]) : '';
   };
-
   return {
     title: r.title ?? '',
     description: r.description ?? '',
-    servings: Number.isFinite(Number(r.servings)) ? Number(r.servings) : '',
+    servings: Number.isFinite(Number(r.servings)) ? Number(r.servings) : 1,  // sensible defaults
     difficulty: r.difficulty ?? 'Easy',
-    totalTime: toMinutesNumber(r.totalTime), // form expects a number
+    totalTime: toMinutesNumber(r.totalTime) || 1,
     imageUrl: r.imageUrl ?? '',
     imageFile: null,
     ingredients: Array.isArray(r.ingredients) && r.ingredients.length ? r.ingredients : [''],
@@ -63,16 +58,16 @@ export function EditRecipe() {
   const recipeFromState = location.state?.recipe ?? null;
 
   const [initial, setInitial] = useState(recipeFromState ? normalizeForForm(recipeFromState) : null);
-  const [loading, setLoading] = useState(!recipeFromState);
+  const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [err, setErr] = useState(null);
 
-  // Fetch only if we don't have state (direct URL / refresh)
+  // ALWAYS fetch to hydrate full data, even if we have partial state
   useEffect(() => {
-    if (recipeFromState) return;
     let cancelled = false;
     (async () => {
       try {
+        setErr(null);
         setLoading(true);
         const data = await apiFetchRecipe(id);
         if (!cancelled) setInitial(normalizeForForm(data));
@@ -83,7 +78,7 @@ export function EditRecipe() {
       }
     })();
     return () => { cancelled = true; };
-  }, [id, recipeFromState]);
+  }, [id]);
 
   const handleDelete = async () => {
     const sure = window.confirm('Delete this recipe? This cannot be undone.');
@@ -106,15 +101,10 @@ export function EditRecipe() {
 
       {err && <div className="alert alert-danger">{err}</div>}
 
-      {/* Delete Button */}
-      <button
-          type="button"
-          className="btn btn-outline-danger"
-          onClick={handleDelete}
-          disabled={loading || deleting}
-        >
-          {deleting ? 'Deleting…' : 'Delete'}
-        </button>
+      <button type="button" className="btn btn-outline-danger"
+        onClick={handleDelete} disabled={loading || deleting}>
+        {deleting ? 'Deleting…' : 'Delete'}
+      </button>
 
       <RecipeForm
         mode="edit"
@@ -122,12 +112,11 @@ export function EditRecipe() {
         loading={loading}
         onSubmit={async (payload) => {
           const saved = await apiUpdateRecipe(id, payload);
-
-          navigate('/viewRecipe', { state: { recipe: saved } });
+          // Go to the canonical route for deep-linking and pass the fresh object, too
+          navigate(`/recipe/${id}`, { state: { recipe: saved } });
         }}
         onCancel={() => navigate(-1)}
       />
-      
     </main>
   );
 }
