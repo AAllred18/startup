@@ -5,8 +5,9 @@ const config = require('./dbConfig.json');
 const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
 
 const client = new MongoClient(url);
-const db = client.db('rental');
+const db = client.db('startup');
 const userCollection = db.collection('user');
+// const recipeCollection = db.collection('recipe');
 
 // This will asynchronously test the connection and exit the process if it fails
 (async function testConnection() {
@@ -18,6 +19,8 @@ const userCollection = db.collection('user');
     process.exit(1);
   }
 })();
+
+// -----  USERS API -----
 
 function getUser(email) {
   return userCollection.findOne({ email: email });
@@ -35,9 +38,13 @@ async function updateUser(user) {
   await userCollection.updateOne({ email: user.email }, { $set: user });
 }
 
+
+
 module.exports = {
+// Users
   getUser,
   getUserByToken,
   addUser,
   updateUser,
+// Recipes
 };
