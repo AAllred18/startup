@@ -48,6 +48,12 @@ async function listRecipesByOwnerEmail(ownerEmail) {
   return docs.map(toRecipeDTO);
 }
 
+async function getRecipeByIdForOwnerEmail(id, ownerEmail) {
+  const _id = new ObjectId(id);
+  const doc = await recipeCollection.findOne({ _id, ownerEmail });
+  return toRecipeDTO(doc);
+}
+
 async function createRecipeForOwnerEmail(ownerEmail, payload) {
   const now = new Date();
   const doc = {
@@ -89,6 +95,12 @@ async function updateRecipeByIdForOwnerEmail(id, ownerEmail, patch) {
   return toRecipeDTO(res.value);
 }
 
+async function deleteRecipeByIdForOwnerEmail(id, ownerEmail) {
+  const _id = new ObjectId(id);
+  const res = await recipeCollection.deleteOne({ _id, ownerEmail });
+  return res.deletedCount === 1;
+}
+
 module.exports = {
 // Users
   getUser,
@@ -97,6 +109,8 @@ module.exports = {
   updateUser,
 // Recipes
   listRecipesByOwnerEmail,
+  getRecipeByIdForOwnerEmail,
   createRecipeForOwnerEmail,
   updateRecipeByIdForOwnerEmail,
+  deleteRecipeByIdForOwnerEmail, 
 };
