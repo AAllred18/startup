@@ -195,6 +195,15 @@ apiRouter.post('/recipes', verifyAuth, (req, res) => {
   res.status(201).send(recipe);
 });
 
+// Get a single recipe by id 
+apiRouter.get('/recipes/:id', verifyAuth, (req, res) => {
+  const r = recipes.get(req.params.id);
+  if (!r || r.ownerEmail !== req.user.email) {
+    return res.status(404).send({ msg: 'Not found' });
+  }
+  res.send(r);
+});
+
 // Edit current recipes based off of their id
 apiRouter.put('/recipes/:id', verifyAuth, (req, res) => {
   const r = recipes.get(req.params.id);

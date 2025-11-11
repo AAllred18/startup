@@ -29,12 +29,13 @@ export function RecipeCard({
           </NavLink>
 
           {onEdit && (
-            <button
+            <NavLink
+              to={`/recipe/${id}/edit`}
+              state={{ recipe }}
               className="btn btn-outline-secondary"
-              onClick={() => onEdit(recipe)}
             >
               Edit
-            </button>
+            </NavLink>
           )}
 
           {onShare && (

@@ -10,6 +10,7 @@ export function MyRecipes() {
   const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   const navigate = useNavigate();
+  const handleEdit = (r) => navigate(`/recipe/${r.id}/edit`, { state: { recipe: r } });
 
   const toCard = (r) => ({
     id: r.id,
