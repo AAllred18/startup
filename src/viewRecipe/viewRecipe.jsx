@@ -85,8 +85,13 @@ export function ViewRecipe() {
 
       <section className="mb-4">
         <h4 className="mb-3">Ingredients</h4>
-        <ul className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2 ps-3">
-          {ingredients.map((item, idx) => <li className="col" key={idx}>{item}</li>)}
+        <ul className="list-unstyled ps-3">
+          {ingredients.map((item, idx) => (
+            <li key={idx} className="mb-1 d-flex align-items-start">
+              <span className="me-2">•</span>
+              <span>{item}</span>
+            </li>
+          ))}
         </ul>
       </section>
 

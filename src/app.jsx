@@ -69,10 +69,11 @@ export default function App() {
                 <Route path='/myRecipes' element={<MyRecipes />} />
                 <Route path='/discover' element={<Discover />} />
                 <Route path="/recipe/addRecipe" element={<AddRecipe />} />
+                <Route path="/recipe/:id" element={<ViewRecipe />} />
                 <Route path="/recipe/:id/edit" element={<EditRecipe />} />
                 <Route path='/randomRecipe' element={<RandomRecipe />} />
                 <Route path='/savedRecipes' element={<SavedRecipes />} />
-                <Route path="/recipe/:id" element={<ViewRecipe />} />
+                
                 <Route path='*' element={<NotFound />} />
             </Routes>
 
