@@ -237,16 +237,42 @@ apiRouter.delete('/recipes/:id', verifyAuth, (req, res) => {
   res.status(204).end();
 });
 
-// "Share" stub (for later WebSocket feature)
-apiRouter.post('/recipes/:id/share', verifyAuth, (req, res) => {
-  const r = recipes.get(req.params.id);
-  if (!r || r.ownerEmail !== req.user.email) {
-    return res.status(404).send({ msg: 'Not found' });
+// Share a recipe (persist + notify)
+apiRouter.post('/recipes/:id/share', verifyAuth, async (req, res) => {
+  try {
+    const updated = await DB.setRecipeShareStatus(req.params.id, req.user.email, true);
+    if (!updated) return res.status(404).send({ msg: 'Not found' });
+    // Notify everyone listening on /ws
+    (typeof broadcast === 'function' ? broadcast : ws.broadcast)({ type: 'recipe:shared', recipe: updated });
+    res.send({ ok: true, id: updated.id, shared: true });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ msg: 'Share failed' });
   }
-
-  res.send({ ok: true, id: r.id, shared: true });
 });
 
+// Unshare a recipe
+apiRouter.delete('/recipes/:id/share', verifyAuth, async (req, res) => {
+  try {
+    const updated = await DB.setRecipeShareStatus(req.params.id, req.user.email, false);
+    if (!updated) return res.status(404).send({ msg: 'Not found' });
+    (typeof broadcast === 'function' ? broadcast : ws.broadcast)({ type: 'recipe:unshared', recipe: updated });
+    res.send({ ok: true, id: updated.id, shared: false });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ msg: 'Unshare failed' });
+  }
+});
+
+apiRouter.get('/discover', verifyAuth, async (req, res) => {
+  try {
+    const items = await DB.listSharedRecipes(req.user.email); // exclude self if you prefer
+    res.send(items);
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({ msg: 'Failed to load discover feed' });
+  }
+});
 
 
 // setAuthCookie in the HTTP response

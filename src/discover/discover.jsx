@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Popup } from '../../components/Popup';
+import { RecipeEvent, RecipeNotifier } from '../../services/recipeNotifier'; // <-- make sure path matches your file
 
 function SharedRecipeCard({ r, onView, onSave }) {
   return (
@@ -28,52 +29,58 @@ export function Discover() {
   const openComingSoon = () => setShowDetails(true);
   const closeComingSoon = () => setShowDetails(false);
 
-  // Initial cards
-  const initial = useMemo(() => ([
-    { id: 'e1', title: 'Chicken Enchilada', totalTime: '35 minutes', difficulty: 'Easy', userName: 'OnoFood18', imageUrl: 'Enchilada.jpeg' },
-    { id: 'm1', title: 'Marry Me Chicken', totalTime: '25 minutes', difficulty: 'Easy', userName: 'Foodie234', imageUrl: 'marrymechicken.jpg' },
-  ]), []);
+  // Data + UI states
+  const [recipes, setRecipes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [connStatus, setConnStatus] = useState('connecting'); // 'connected' | 'disconnected' | 'connecting'
+  const [error, setError] = useState('');
 
-  // Pool for simulated feed
-  const pool = useMemo(() => ([
-    { title: 'Creamy Garlic Pasta', totalTime: '20 minutes', difficulty: 'Easy', userName: 'foodieOne', imageUrl: 'creamygarlicpasta.jpeg' },
-    { title: 'Hawaiian BBQ Chicken', totalTime: '35 minutes', difficulty: 'Medium', userName: 'ILoveFood', imageUrl: 'hawaiianbbqchicken.jpg' },
-    { title: 'Veggie Stir Fry', totalTime: '25 minutes', difficulty: 'Easy', userName: 'GoCougs', imageUrl: 'vegetablestirfry.jpeg' },
-    { title: 'Beef Bulgogi Bowls', totalTime: '30 minutes', difficulty: 'Medium', userName: 'Yummyrecipes', imageUrl: 'bulgogi.jpeg' },
-    { title: 'Lemon Herb Salmon', totalTime: '22 minutes', difficulty: 'Easy', userName: 'CoolGrandma', imageUrl: 'lemonsalmon.jpeg' },
-  ]), []);
-
-  const [recipes, setRecipes] = useState(initial);
-  const [feedStopped, setFeedStopped] = useState(false);
-  const timerRef = useRef(null);
-  const stopTimerRef = useRef(null);
-  const idRef = useRef(1000);
-
-  const pushRandom = () => {
-    const pick = pool[Math.floor(Math.random() * pool.length)];
-    const newItem = {
-      id: `r${idRef.current++}`,
-      title: pick.title,
-      totalTime: pick.totalTime,
-      difficulty: pick.difficulty,
-      userName: pick.userName,
-      imageUrl: pick.imageUrl,
-    };
-    setRecipes(prev => [...prev, newItem]);
-  };
+  const reload = useCallback(async () => {
+    setError('');
+    try {
+      setLoading(true);
+      const res = await fetch('/api/discover', {
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(txt || `Failed to load discover (${res.status})`);
+      }
+      const data = await res.json();
+      setRecipes(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error(e);
+      setError(e?.message ?? 'Failed to load discover feed');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    timerRef.current = setInterval(pushRandom, 10000);
-    stopTimerRef.current = setTimeout(() => {
-      clearInterval(timerRef.current);
-      setFeedStopped(true);
-    }, 60000);
+    // initial load
+    reload();
 
-    return () => {
-      clearInterval(timerRef.current);
-      clearTimeout(stopTimerRef.current);
-    };
-  }, []);
+    // subscribe to WS events
+    const unsubscribe = RecipeNotifier.addHandler((evt) => {
+      if (evt.type === RecipeEvent.System) {
+        setConnStatus(evt?.value?.msg === 'connected' ? 'connected' : 'disconnected');
+        return;
+      }
+
+      // For any recipe change event, simplest is to re-fetch the list.
+      if (
+        evt.type === RecipeEvent.Shared ||
+        evt.type === RecipeEvent.Unshared ||
+        evt.type === RecipeEvent.Updated ||
+        evt.type === RecipeEvent.Deleted
+      ) {
+        reload();
+      }
+    });
+
+    return unsubscribe;
+  }, [reload]);
 
   // Hook up buttons to popup
   const handleView = () => openComingSoon();
@@ -84,8 +91,22 @@ export function Discover() {
 
   return (
     <main>
-      <h1>Discover</h1>
-      <h3>Explore new recipes from people on our platform</h3>
+      <div className="d-flex align-items-center justify-content-between">
+        <div>
+          <h1>Discover</h1>
+          <h3>Explore new recipes from people on our platform</h3>
+        </div>
+
+        {/* tiny status badge */}
+        <span
+          className={`badge text-bg-${
+            connStatus === 'connected' ? 'success' : connStatus === 'connecting' ? 'secondary' : 'warning'
+          }`}
+          title="WebSocket status"
+        >
+          {connStatus}
+        </span>
+      </div>
 
       {/* Header actions */}
       <header className="py-3 px-4">
@@ -102,9 +123,18 @@ export function Discover() {
       </header>
 
       <section className="px-2 pb-5">
-        {recipes.length === 0 ? (
-          <p className="text-center text-muted">No recipes yet. Check back soon!</p>
-        ) : (
+        {loading && <p className="text-center text-muted">Loading shared recipes…</p>}
+        {!!error && !loading && (
+          <div className="alert alert-danger text-center" role="alert">
+            {error}
+          </div>
+        )}
+
+        {!loading && !error && recipes.length === 0 && (
+          <p className="text-center text-muted">No shared recipes yet. Check back soon!</p>
+        )}
+
+        {!loading && !error && recipes.length > 0 && (
           <div className={gridClass}>
             {recipes.map((r) => (
               <div className="col" key={r.id}>
@@ -113,15 +143,9 @@ export function Discover() {
             ))}
           </div>
         )}
-
-        {feedStopped && (
-          <div className="text-center text-muted mt-4">
-            🔔 The feed has stopped adding new recipes after one minute.
-          </div>
-        )}
       </section>
 
-      {/* Use your Popup component */}
+      {/* Popup */}
       <Popup
         show={showDetails}
         onClose={closeComingSoon}
