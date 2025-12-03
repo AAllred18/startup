@@ -179,61 +179,36 @@ function seedForUser(email) {
 }
 
 // Send all recipes over that are connected to the owner
-apiRouter.get('/recipes', verifyAuth, (req, res) => {
-  seedForUser(req.user.email);
-  const mine = Array.from(recipes.values())
-    .filter(r => r.ownerEmail === req.user.email)
-    .map(r => ({
-      ...r,
-      ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
-      steps: Array.isArray(r.steps) ? r.steps : [],
-    }));
+apiRouter.get('/recipes', verifyAuth, async (req, res) => {
+  const mine = await DB.listRecipesByOwnerEmail(req.user.email);
   res.send(mine);
 });
 
 // Create a new recipe for the logged-in user
-apiRouter.post('/recipes', verifyAuth, (req, res) => {
+apiRouter.post('/recipes', verifyAuth, async (req, res) => {
   const data = normalizeRecipeInput(req.body);
-  const id = uuid.v4();
-
-  const recipe = {
-    id,
-    ownerEmail: req.user.email,
-    ...data,
-  };
-  recipes.set(id, recipe);
-  res.status(201).send(recipe);
+  const created = await DB.createRecipeForOwnerEmail(req.user.email, { ...data, shared: false });
+  res.status(201).send(created);
 });
 
 // Get a single recipe by id 
-apiRouter.get('/recipes/:id', verifyAuth, (req, res) => {
-  const r = recipes.get(req.params.id);
-  if (!r || r.ownerEmail !== req.user.email) return res.status(404).send({ msg: 'Not found' });
-  res.send({
-    ...r,
-    ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
-    steps: Array.isArray(r.steps) ? r.steps : [],
-  });
+apiRouter.get('/recipes/:id', verifyAuth, async (req, res) => {
+  const r = await DB.getRecipeByIdForOwnerEmail(req.params.id, req.user.email);
+  if (!r) return res.status(404).send({ msg: 'Not found' });
+  res.send(r);
 });
 
 // Edit current recipes based off of their id
-apiRouter.put('/recipes/:id', verifyAuth, (req, res) => {
-  const r = recipes.get(req.params.id);
-  if (!r || r.ownerEmail !== req.user.email) {
-    return res.status(404).send({ msg: 'Not found' });
-  }
-  const updated = { ...r, ...normalizeRecipeInput(req.body, r) };
-  recipes.set(r.id, updated);
+apiRouter.put('/recipes/:id', verifyAuth, async (req, res) => {
+  const patch = normalizeRecipeInput(req.body, {});
+  const updated = await DB.updateRecipeByIdForOwnerEmail(req.params.id, req.user.email, patch);
+  if (!updated) return res.status(404).send({ msg: 'Not found' });
   res.send(updated);
 });
 
-apiRouter.delete('/recipes/:id', verifyAuth, (req, res) => {
-  const r = recipes.get(req.params.id);
-  if (!r || r.ownerEmail !== req.user.email) {
-    return res.status(404).send({ msg: 'Not found' });
-  }
-
-  recipes.delete(r.id);
+apiRouter.delete('/recipes/:id', verifyAuth, async (req, res) => {
+  const ok = await DB.deleteRecipeByIdForOwnerEmail(req.params.id, req.user.email);
+  if (!ok) return res.status(404).send({ msg: 'Not found' });
   res.status(204).end();
 });
 
@@ -290,3 +265,60 @@ const httpService = app.listen(port, () => {
 });
 
 peerProxy(httpService);
+
+
+// apiRouter.get('/recipes', verifyAuth, (req, res) => {
+//   seedForUser(req.user.email);
+//   const mine = Array.from(recipes.values())
+//     .filter(r => r.ownerEmail === req.user.email)
+//     .map(r => ({
+//       ...r,
+//       ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
+//       steps: Array.isArray(r.steps) ? r.steps : [],
+//     }));
+//   res.send(mine);
+// });
+
+// apiRouter.post('/recipes', verifyAuth, (req, res) => {
+//   const data = normalizeRecipeInput(req.body);
+//   const id = uuid.v4();
+
+//   const recipe = {
+//     id,
+//     ownerEmail: req.user.email,
+//     ...data,
+//   };
+//   recipes.set(id, recipe);
+//   res.status(201).send(recipe);
+// });
+
+// Get a single recipe by id 
+// apiRouter.get('/recipes/:id', verifyAuth, (req, res) => {
+//   const r = recipes.get(req.params.id);
+//   if (!r || r.ownerEmail !== req.user.email) return res.status(404).send({ msg: 'Not found' });
+//   res.send({
+//     ...r,
+//     ingredients: Array.isArray(r.ingredients) ? r.ingredients : [],
+//     steps: Array.isArray(r.steps) ? r.steps : [],
+//   });
+// });
+
+// apiRouter.put('/recipes/:id', verifyAuth, (req, res) => {
+//   const r = recipes.get(req.params.id);
+//   if (!r || r.ownerEmail !== req.user.email) {
+//     return res.status(404).send({ msg: 'Not found' });
+//   }
+//   const updated = { ...r, ...normalizeRecipeInput(req.body, r) };
+//   recipes.set(r.id, updated);
+//   res.send(updated);
+// });
+
+// apiRouter.delete('/recipes/:id', verifyAuth, (req, res) => {
+//   const r = recipes.get(req.params.id);
+//   if (!r || r.ownerEmail !== req.user.email) {
+//     return res.status(404).send({ msg: 'Not found' });
+//   }
+
+//   recipes.delete(r.id);
+//   res.status(204).end();
+// });

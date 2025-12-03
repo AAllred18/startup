@@ -14,6 +14,9 @@ export function RecipeCard({ recipe, onEdit, onShare, onUnshare, isShared, disab
         <p className="card-text mb-1">Prep + Cook: {recipe.totalTime}</p>
         <p className="card-text mb-1">Difficulty: {recipe.difficulty}</p>
         <div className="d-flex justify-content-center gap-2 mt-3">
+          <NavLink to={`/recipe/${recipe.id}`} state={{ recipe }} className="btn btn-primary">
+             View
+           </NavLink>
           <button className="btn btn-outline-secondary" onClick={() => onEdit?.(recipe)} disabled={disabled}>
             Edit
           </button>

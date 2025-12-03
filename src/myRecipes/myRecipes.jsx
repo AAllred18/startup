@@ -53,7 +53,7 @@ export function MyRecipes() {
   }, [recipes, query]);
 
   const onEdit = (recipe) => {
-    navigate(`/recipe/edit/${recipe.id}`, { state: { recipe } });
+    navigate(`/recipe/${recipe.id}/edit`, { state: { recipe } });
   };
 
   const [busyIds, setBusyIds] = useState(new Set()); // to disable buttons per card during calls

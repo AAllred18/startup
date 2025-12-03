@@ -72,7 +72,15 @@ export function EditRecipe() {
         const data = await apiFetchRecipe(id);
         if (!cancelled) setInitial(normalizeForForm(data));
       } catch (e) {
-        if (!cancelled) setErr(e.message || 'Failed to load recipe');
+        // If we have a recipe in location.state, keep it usable even if fetch fails
+       if (!cancelled) {
+         if (recipeFromState) {
+           setErr(null); // let the user proceed
+           setInitial(normalizeForForm(recipeFromState));
+         } else {
+           setErr(e.message || 'Failed to load recipe');
+         }
+       }
       } finally {
         if (!cancelled) setLoading(false);
       }
