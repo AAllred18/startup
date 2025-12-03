@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Popup } from '../../components/Popup';
-import { RecipeEvent, RecipeNotifier } from '../../services/recipeNotifier'; // <-- make sure path matches your file
+import { RecipeEvent, RecipeNotifier } from './recipeNotifier'; 
 
 function SharedRecipeCard({ r, onView, onSave }) {
   return (

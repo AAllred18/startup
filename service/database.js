@@ -1,33 +1,67 @@
+// database.js
 // Connection to MongoDB
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const config = require('./dbConfig.json');
 
 const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
+// ignoreUndefined keeps $set from writing undefined fields
+const client = new MongoClient(url, { ignoreUndefined: true });
 
-const client = new MongoClient(url);
-const db = client.db('startup');
-const userCollection = db.collection('user');
-const recipeCollection = db.collection('recipe');
+let db, userCollection, recipeCollection;
 
-// This will asynchronously test the connection and exit the process if it fails
-(async function testConnection() {
+// Connect once on startup and verify
+(async function init() {
   try {
+    await client.connect();
+    db = client.db('startup');
+    userCollection = db.collection('user');
+    recipeCollection = db.collection('recipe');
+
     await db.command({ ping: 1 });
-    console.log(`Connect to database`);
+    console.log('Connected to database');
+
+    // Helpful indexes
+    await Promise.all([
+      userCollection.createIndex({ email: 1 }, { unique: true }),
+      userCollection.createIndex({ token: 1 }, { sparse: true }),
+
+      recipeCollection.createIndex({ ownerEmail: 1, updatedAt: -1 }),
+      recipeCollection.createIndex({ shared: 1, sharedAt: -1 }),
+    ]);
   } catch (ex) {
-    console.log(`Unable to connect to database with ${url} because ${ex.message}`);
+    console.error(`Unable to connect to database with ${url} because ${ex.message}`);
     process.exit(1);
   }
 })();
 
-// -----  USERS API -----
+// ----------------- Helpers -----------------
+function toRecipeDTO(doc) {
+  if (!doc) return null;
+  return {
+    id: String(doc._id),
+    ownerEmail: doc.ownerEmail,
+    title: doc.title ?? 'Untitled',
+    totalTime: doc.totalTime ?? '—',         // e.g., "25 minutes" or "—"
+    difficulty: doc.difficulty ?? '—',
+    imageUrl: doc.imageUrl ?? 'placeholder.jpg',
+    description: doc.description ?? '',
+    servings: Number.isFinite(doc.servings) ? doc.servings : 0,
+    ingredients: Array.isArray(doc.ingredients) ? doc.ingredients : [],
+    steps: Array.isArray(doc.steps) ? doc.steps : [],
+    shared: !!doc.shared,
+    sharedAt: doc.sharedAt ?? null,
+    createdAt: doc.createdAt ?? null,
+    updatedAt: doc.updatedAt ?? null,
+  };
+}
 
+// ----------------- USERS API -----------------
 function getUser(email) {
-  return userCollection.findOne({ email: email });
+  return userCollection.findOne({ email });
 }
 
 function getUserByToken(token) {
-  return userCollection.findOne({ token: token });
+  return userCollection.findOne({ token });
 }
 
 async function addUser(user) {
@@ -35,11 +69,11 @@ async function addUser(user) {
 }
 
 async function updateUser(user) {
+  // Expect full user object with email as key; set only provided fields
   await userCollection.updateOne({ email: user.email }, { $set: user });
 }
 
-// ----- Recipe API -----
-
+// ----------------- RECIPES API -----------------
 async function listRecipesByOwnerEmail(ownerEmail) {
   const docs = await recipeCollection
     .find({ ownerEmail })
@@ -66,6 +100,10 @@ async function createRecipeForOwnerEmail(ownerEmail, payload) {
     servings:    payload.servings,    // number
     ingredients: payload.ingredients, // string[]
     steps:       payload.steps,       // string[]
+    shared:      !!payload.shared,    // default false if not provided
+    sharedAt:    payload.shared ? now : null,
+    createdAt:   now,
+    updatedAt:   now,
   };
 
   const result = await recipeCollection.insertOne(doc);
@@ -84,6 +122,7 @@ async function updateRecipeByIdForOwnerEmail(id, ownerEmail, patch) {
   for (const k of keys) {
     if (k in patch) set[k] = patch[k];
   }
+  set.updatedAt = new Date();
 
   const res = await recipeCollection.findOneAndUpdate(
     { _id, ownerEmail },
@@ -101,16 +140,50 @@ async function deleteRecipeByIdForOwnerEmail(id, ownerEmail) {
   return res.deletedCount === 1;
 }
 
+// ---------- Sharing helpers for Discover ----------
+async function setRecipeShareStatus(id, ownerEmail, share) {
+  const _id = new ObjectId(id);
+  const now = new Date();
+
+  const res = await recipeCollection.findOneAndUpdate(
+    { _id, ownerEmail },
+    { $set: { shared: !!share, sharedAt: share ? now : null, updatedAt: now } },
+    { returnDocument: 'after' }
+  );
+
+  if (!res.value) return null;
+  return toRecipeDTO(res.value);
+}
+
+async function listSharedRecipes(excludeOwnerEmail) {
+  const filter = excludeOwnerEmail
+    ? { shared: true, ownerEmail: { $ne: excludeOwnerEmail } }
+    : { shared: true };
+
+  const docs = await recipeCollection
+    .find(filter)
+    .sort({ sharedAt: -1, updatedAt: -1 })
+    .limit(100)
+    .toArray();
+
+  return docs.map(toRecipeDTO);
+}
+
 module.exports = {
-// Users
+  // Users
   getUser,
   getUserByToken,
   addUser,
   updateUser,
-// Recipes
+
+  // Recipes
   listRecipesByOwnerEmail,
   getRecipeByIdForOwnerEmail,
   createRecipeForOwnerEmail,
   updateRecipeByIdForOwnerEmail,
-  deleteRecipeByIdForOwnerEmail, 
+  deleteRecipeByIdForOwnerEmail,
+
+  // Sharing
+  setRecipeShareStatus,
+  listSharedRecipes,
 };

@@ -18,6 +18,7 @@ export function MyRecipes() {
     totalTime: r.totalTime ?? '—',
     difficulty: r.difficulty ?? '—',
     imageUrl: r.imageUrl ?? 'placeholder.jpg',
+    shared: !!r.shared, 
   });
 
   useEffect(() => {
@@ -55,18 +56,34 @@ export function MyRecipes() {
     navigate(`/recipe/edit/${recipe.id}`, { state: { recipe } });
   };
 
-  const onShare = async (recipe) => {
-    try {
-      const r = await fetch(`/api/recipes/${recipe.id}/share`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      if (!r.ok) throw new Error('Share failed');
-      alert(`Shared "${recipe.title}"`);
-    } catch (e) {
-      alert(e.message || 'Share failed');
-    }
-  };
+  const [busyIds, setBusyIds] = useState(new Set()); // to disable buttons per card during calls
+
+ const toggleShare = async (recipe, share) => {
+   try {
+     setBusyIds(prev => new Set(prev).add(recipe.id));
+     const r = await fetch(`/api/recipes/${recipe.id}/share`, {
+       method: share ? 'POST' : 'DELETE',
+       credentials: 'include',
+     });
+     if (!r.ok) {
+       const txt = await r.text().catch(() => '');
+       throw new Error(txt || (share ? 'Share failed' : 'Unshare failed'));
+     }
+     // optimistic state update
+     setRecipes(prev => prev.map(x => x.id === recipe.id ? { ...x, shared: share } : x));
+   } catch (e) {
+     alert(e.message || (share ? 'Share failed' : 'Unshare failed'));
+   } finally {
+     setBusyIds(prev => {
+       const next = new Set(prev);
+       next.delete(recipe.id);
+       return next;
+     });
+   }
+ };
+
+ const onShare = (recipe) => toggleShare(recipe, true);
+ const onUnshare = (recipe) => toggleShare(recipe, false);
 
   return (
     <main>
@@ -117,7 +134,10 @@ export function MyRecipes() {
               key={recipe.id}
               recipe={recipe}
               onEdit={onEdit}
-              onShare={onShare}
+              onShare={() => onShare(recipe)}
+              onUnshare={() => onUnshare(recipe)}
+              isShared={recipe.shared}
+              disabled={busyIds.has(recipe.id)}
             />
           ))}
         </div>
