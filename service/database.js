@@ -173,12 +173,22 @@ async function setRecipeShareStatus(id, ownerEmail, shared) {
 async function setRecipeShareStatusById(id, shared) {
   const _id = new ObjectId(id);
   const now = new Date();
+
   const res = await recipeCollection.findOneAndUpdate(
     { _id },
     { $set: { shared: !!shared, sharedAt: shared ? now : null, updatedAt: now } },
-    { returnDocument: 'after' }
+    {
+      returnDocument: 'after',   // v4+ drivers
+      returnOriginal: false,     // v3 drivers
+    }
   );
-  return res.value ? toRecipeDTO(res.value) : null;
+
+  // Some driver/env combos still return null in res.value; fetch after as a fallback
+  let doc = res.value;
+  if (!doc) {
+    doc = await recipeCollection.findOne({ _id });
+  }
+  return doc ? toRecipeDTO(doc) : null;
 }
 
 
@@ -196,6 +206,27 @@ async function listSharedRecipes(excludeOwnerEmail) {
 
   return docs.map(toRecipeDTO);
 }
+
+
+async function setRecipeShareStatusOwnerScoped(id, ownerEmail, shared) {
+  const _id = new ObjectId(id);
+  const now = new Date();
+
+  const res = await recipeCollection.findOneAndUpdate(
+    { _id, ownerEmail },
+    { $set: { shared: !!shared, sharedAt: shared ? now : null, updatedAt: now } },
+    {
+      returnDocument: 'after',   // Node driver v4+
+      returnOriginal: false,     // v3 compat
+    }
+  );
+
+  // Some envs still return null; read it after as a fallback
+  let doc = res.value || (await recipeCollection.findOne({ _id, ownerEmail }));
+  return doc ? toRecipeDTO(doc) : null;
+}
+
+
 
 module.exports = {
   // Users
@@ -215,4 +246,5 @@ module.exports = {
   setRecipeShareStatus,
   setRecipeShareStatusById,
   listSharedRecipes,
+  setRecipeShareStatusOwnerScoped
 };

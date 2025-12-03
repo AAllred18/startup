@@ -226,42 +226,98 @@ apiRouter.delete('/recipes/:id', verifyAuth, async (req, res) => {
   res.status(204).end();
 });
 
-// Share a recipe (mirror "view" ownership check)
+// Share
 apiRouter.post('/recipes/:id/share', verifyAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    // 1) verify caller owns it — same as view route
+
+    // Ownership gate (like your GET /recipes/:id)
     const owned = await DB.getRecipeByIdForOwnerEmail(id, req.user.email);
-    if (!owned) return res.status(404).send({ msg: 'Not found' });
+    if (!owned) return res.status(404).json({ msg: 'Not found' });
 
-    // 2) flip flag by _id only
-    const updated = await DB.setRecipeShareStatusById(id, true);
+    // Flip the flag. Treat any truthy result as success; do NOT deref updated.id.
+    const updated = await DB.setRecipeShareStatusOwnerScoped?.(id, req.user.email, true)
+                 ?? await DB.setRecipeShareStatusById?.(id, true);
+    if (!updated) return res.status(404).json({ msg: 'Not found' });
 
-    // 3) notify listeners
-    ws.broadcast({ type: 'recipe:shared', recipe: updated });
-    res.send({ ok: true, id: updated.id, shared: true });
+    // Broadcast a minimal event; Discover will call reload() anyway
+    try { ws.broadcast({ type: 'recipe:shared', recipe: { id } }); } catch {}
+
+    return res.status(200).json({ ok: true, id, shared: true });
   } catch (e) {
     console.error('Share failed:', e);
-    res.status(500).send({ msg: 'Share failed', error: String(e?.message || e) });
+    return res.status(500).json({ msg: 'Share failed' });
   }
 });
 
-// Unshare a recipe (same pattern)
+// Unshare
 apiRouter.delete('/recipes/:id/share', verifyAuth, async (req, res) => {
   try {
     const { id } = req.params;
+
     const owned = await DB.getRecipeByIdForOwnerEmail(id, req.user.email);
-    if (!owned) return res.status(404).send({ msg: 'Not found' });
+    if (!owned) return res.status(404).json({ msg: 'Not found' });
 
-    const updated = await DB.setRecipeShareStatusById(id, false);
+    const updated = await DB.setRecipeShareStatusOwnerScoped?.(id, req.user.email, false)
+                 ?? await DB.setRecipeShareStatusById?.(id, false);
+    if (!updated) return res.status(404).json({ msg: 'Not found' });
 
-    ws.broadcast({ type: 'recipe:unshared', recipe: updated });
-    res.send({ ok: true, id: updated.id, shared: false });
+    try { ws.broadcast({ type: 'recipe:unshared', recipe: { id } }); } catch {}
+
+    return res.status(200).json({ ok: true, id, shared: false });
   } catch (e) {
     console.error('Unshare failed:', e);
-    res.status(500).send({ msg: 'Unshare failed', error: String(e?.message || e) });
+    return res.status(500).json({ msg: 'Unshare failed' });
   }
 });
+
+
+
+// // Share a recipe
+// apiRouter.post('/recipes/:id/share', verifyAuth, async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     // 1) verify the caller owns it (same as your view route)
+//     const owned = await DB.getRecipeByIdForOwnerEmail(id, req.user.email);
+//     if (!owned) return res.status(404).json({ msg: 'Not found' });
+
+//     // 2) flip flag and get the updated doc
+//     const updated = await DB.setRecipeShareStatusOwnerScoped(id, req.user.email, true);
+//     if (!updated) return res.status(404).json({ msg: 'Not found' }); // ← GUARD
+
+//     // 3) broadcast but never let WS errors crash HTTP
+//     try { ws.broadcast({ type: 'recipe:shared', recipe: updated }); }
+//     catch (e) { console.warn('[ws] broadcast error (share):', e?.message || e); }
+
+//     return res.status(200).json({ ok: true, id: updated.id, shared: true });
+//   } catch (e) {
+//     console.error('Share failed:', e);
+//     return res.status(500).json({ msg: 'Share failed' });
+//   }
+// });
+
+// // Unshare a recipe (owner-gated, null-safe)
+// apiRouter.delete('/recipes/:id/share', verifyAuth, async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     const owned = await DB.getRecipeByIdForOwnerEmail(id, req.user.email);
+//     if (!owned) return res.status(404).json({ msg: 'Not found' });
+
+//     const updated = await DB.setRecipeShareStatusOwnerScoped(id, req.user.email, false);
+//     if (!updated) return res.status(404).json({ msg: 'Not found' }); // ← GUARD
+
+//     try { ws.broadcast({ type: 'recipe:unshared', recipe: updated }); }
+//     catch (e) { console.warn('[ws] broadcast error (unshare):', e?.message || e); }
+
+//     return res.status(200).json({ ok: true, id: updated.id, shared: false });
+//   } catch (e) {
+//     console.error('Unshare failed:', e);
+//     return res.status(500).json({ msg: 'Unshare failed' });
+//   }
+// });
+
 
 
 // // Share a recipe 
