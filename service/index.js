@@ -226,18 +226,18 @@ apiRouter.delete('/recipes/:id', verifyAuth, async (req, res) => {
   res.status(204).end();
 });
 
-// Share a recipe 
+// Share a recipe (mirror "view" ownership check)
 apiRouter.post('/recipes/:id/share', verifyAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const owner = req.user.email;
-    console.log('[share] id', id, 'ownerEmail', owner);
+    // 1) verify caller owns it — same as view route
+    const owned = await DB.getRecipeByIdForOwnerEmail(id, req.user.email);
+    if (!owned) return res.status(404).send({ msg: 'Not found' });
 
-    const updated = await DB.setRecipeShareStatus(id, owner, true);
-    if (!updated) {
-      console.log('[share] NOT FOUND');
-      return res.status(404).send({ msg: 'Not found' });
-    }
+    // 2) flip flag by _id only
+    const updated = await DB.setRecipeShareStatusById(id, true);
+
+    // 3) notify listeners
     ws.broadcast({ type: 'recipe:shared', recipe: updated });
     res.send({ ok: true, id: updated.id, shared: true });
   } catch (e) {
@@ -246,11 +246,15 @@ apiRouter.post('/recipes/:id/share', verifyAuth, async (req, res) => {
   }
 });
 
-// Unshare a Recipe
+// Unshare a recipe (same pattern)
 apiRouter.delete('/recipes/:id/share', verifyAuth, async (req, res) => {
   try {
-    const updated = await DB.setRecipeShareStatus(req.params.id, req.user.email, false);
-    if (!updated) return res.status(404).send({ msg: 'Not found' });
+    const { id } = req.params;
+    const owned = await DB.getRecipeByIdForOwnerEmail(id, req.user.email);
+    if (!owned) return res.status(404).send({ msg: 'Not found' });
+
+    const updated = await DB.setRecipeShareStatusById(id, false);
+
     ws.broadcast({ type: 'recipe:unshared', recipe: updated });
     res.send({ ok: true, id: updated.id, shared: false });
   } catch (e) {
@@ -258,6 +262,40 @@ apiRouter.delete('/recipes/:id/share', verifyAuth, async (req, res) => {
     res.status(500).send({ msg: 'Unshare failed', error: String(e?.message || e) });
   }
 });
+
+
+// // Share a recipe 
+// apiRouter.post('/recipes/:id/share', verifyAuth, async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const owner = req.user.email;
+//     console.log('[share] id', id, 'ownerEmail', owner);
+
+//     const updated = await DB.setRecipeShareStatus(id, owner, true);
+//     if (!updated) {
+//       console.log('[share] NOT FOUND');
+//       return res.status(404).send({ msg: 'Not found' });
+//     }
+//     ws.broadcast({ type: 'recipe:shared', recipe: updated });
+//     res.send({ ok: true, id: updated.id, shared: true });
+//   } catch (e) {
+//     console.error('Share failed:', e);
+//     res.status(500).send({ msg: 'Share failed', error: String(e?.message || e) });
+//   }
+// });
+
+// // Unshare a Recipe
+// apiRouter.delete('/recipes/:id/share', verifyAuth, async (req, res) => {
+//   try {
+//     const updated = await DB.setRecipeShareStatus(req.params.id, req.user.email, false);
+//     if (!updated) return res.status(404).send({ msg: 'Not found' });
+//     ws.broadcast({ type: 'recipe:unshared', recipe: updated });
+//     res.send({ ok: true, id: updated.id, shared: false });
+//   } catch (e) {
+//     console.error('Unshare failed:', e);
+//     res.status(500).send({ msg: 'Unshare failed', error: String(e?.message || e) });
+//   }
+// });
 
 apiRouter.get('/discover', verifyAuth, async (req, res) => {
   try {

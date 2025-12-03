@@ -170,6 +170,17 @@ async function setRecipeShareStatus(id, ownerEmail, shared) {
   return res.value ? toRecipeDTO(res.value) : null;
 }
 
+async function setRecipeShareStatusById(id, shared) {
+  const _id = new ObjectId(id);
+  const now = new Date();
+  const res = await recipeCollection.findOneAndUpdate(
+    { _id },
+    { $set: { shared: !!shared, sharedAt: shared ? now : null, updatedAt: now } },
+    { returnDocument: 'after' }
+  );
+  return res.value ? toRecipeDTO(res.value) : null;
+}
+
 
 
 async function listSharedRecipes(excludeOwnerEmail) {
@@ -202,5 +213,6 @@ module.exports = {
 
   // Sharing
   setRecipeShareStatus,
+  setRecipeShareStatusById,
   listSharedRecipes,
 };
