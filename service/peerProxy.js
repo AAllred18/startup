@@ -1,4 +1,4 @@
-const { WebSocketServer } = require('ws');
+const { WebSocketServer, WebSocket } = require('ws');
 
 function peerProxy(httpServer) {
   // Create a websocket object
@@ -31,6 +31,16 @@ function peerProxy(httpServer) {
       client.ping();
     });
   }, 10000);
+
+  function broadcast(payload) {
+    const data = typeof payload === 'string' ? payload : JSON.stringify(payload);
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) client.send(data);
+    });
+  }
+
+  return { broadcast };
+
 }
 
 module.exports = { peerProxy };

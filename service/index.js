@@ -212,13 +212,12 @@ apiRouter.delete('/recipes/:id', verifyAuth, async (req, res) => {
   res.status(204).end();
 });
 
-// Share a recipe (persist + notify)
+// Share a recipe 
 apiRouter.post('/recipes/:id/share', verifyAuth, async (req, res) => {
   try {
     const updated = await DB.setRecipeShareStatus(req.params.id, req.user.email, true);
     if (!updated) return res.status(404).send({ msg: 'Not found' });
-    // Notify everyone listening on /ws
-    (typeof broadcast === 'function' ? broadcast : ws.broadcast)({ type: 'recipe:shared', recipe: updated });
+    ws.broadcast({ type: 'recipe:shared', recipe: updated });   // <--
     res.send({ ok: true, id: updated.id, shared: true });
   } catch (e) {
     console.error(e);
@@ -226,12 +225,12 @@ apiRouter.post('/recipes/:id/share', verifyAuth, async (req, res) => {
   }
 });
 
-// Unshare a recipe
+// Unshare a Recipe
 apiRouter.delete('/recipes/:id/share', verifyAuth, async (req, res) => {
   try {
     const updated = await DB.setRecipeShareStatus(req.params.id, req.user.email, false);
     if (!updated) return res.status(404).send({ msg: 'Not found' });
-    (typeof broadcast === 'function' ? broadcast : ws.broadcast)({ type: 'recipe:unshared', recipe: updated });
+    ws.broadcast({ type: 'recipe:unshared', recipe: updated }); // <--
     res.send({ ok: true, id: updated.id, shared: false });
   } catch (e) {
     console.error(e);
@@ -241,7 +240,7 @@ apiRouter.delete('/recipes/:id/share', verifyAuth, async (req, res) => {
 
 apiRouter.get('/discover', verifyAuth, async (req, res) => {
   try {
-    const items = await DB.listSharedRecipes(req.user.email); // exclude self if you prefer
+    const items = await DB.listSharedRecipes(null); // exclude self if you prefer
     res.send(items);
   } catch (e) {
     console.error(e);
@@ -264,8 +263,8 @@ const httpService = app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 
-peerProxy(httpService);
-
+const ws = peerProxy(httpService);
+// peerProxy(httpService);
 
 // apiRouter.get('/recipes', verifyAuth, (req, res) => {
 //   seedForUser(req.user.email);

@@ -2,24 +2,27 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Popup } from '../../components/Popup';
 import { RecipeEvent, RecipeNotifier } from './recipeNotifier'; 
+import { PublicRecipeCard } from '../../components/PublicRecipeCard';
+import '../recipes.css'
 
-function SharedRecipeCard({ r, onView, onSave }) {
-  return (
-    <div className="card recipe-card mb-4 h-100">
-      <img src={r.imageUrl} alt={r.title} className="card-img-top" />
-      <div className="card-body text-center">
-        <h4 className="card-title">{r.title}</h4>
-        <p className="card-text mb-1">Prep + Cook: {r.totalTime}</p>
-        <p className="card-text mb-1">Difficulty: {r.difficulty}</p>
-        {r.userName && <p className="card-text">User: {r.userName}</p>}
-        <div className="d-flex justify-content-center gap-3 mt-3">
-          <button className="btn btn-primary" onClick={() => onView(r)}>View</button>
-          <button className="btn btn-outline-secondary" onClick={() => onSave(r)}>Save</button>
-        </div>
-      </div>
-    </div>
-  );
-}
+// function SharedRecipeCard({ r, onView, onSave }) {
+//   return (
+//     <div className="card recipe-card h-100 d-flex flex-column">
+//       <img src={r.imageUrl} alt={r.title} className="card-img-top recipe-card-img" />
+//       <div className="card-body text-center d-flex flex-column">
+//         <h4 className="card-title">{r.title}</h4>
+//         <p className="card-text mb-1">Prep + Cook: {r.totalTime}</p>
+//         <p className="card-text mb-1">Difficulty: {r.difficulty}</p>
+//         {r.userName && <p className="card-text">User: {r.userName}</p>}
+
+//         <div className="mt-auto d-flex justify-content-center gap-3">
+//           <button className="btn btn-primary" onClick={() => onView(r)}>View</button>
+//           <button className="btn btn-outline-secondary" onClick={() => onSave(r)}>Save</button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
 
 export function Discover() {
   const navigate = useNavigate();
@@ -64,7 +67,7 @@ export function Discover() {
     // subscribe to WS events
     const unsubscribe = RecipeNotifier.addHandler((evt) => {
       if (evt.type === RecipeEvent.System) {
-        setConnStatus(evt?.value?.msg === 'connected' ? 'connected' : 'disconnected');
+        setConnStatus(evt?.value?.msg === 'Connected' ? 'Connected' : 'Disconnected');
         return;
       }
 
@@ -135,13 +138,17 @@ export function Discover() {
         )}
 
         {!loading && !error && recipes.length > 0 && (
-          <div className={gridClass}>
-            {recipes.map((r) => (
-              <div className="col" key={r.id}>
-                <SharedRecipeCard r={r} onView={handleView} onSave={handleSave} />
-              </div>
-            ))}
-          </div>
+           <div className={gridClass}>
+              {recipes.map((r) => (
+                <div className="col d-flex" key={r.id}>
+                  <PublicRecipeCard
+                    recipe={r}
+                    onView={handleView}
+                    onSave={handleSave}
+                  />
+                </div>
+              ))}
+            </div>
         )}
       </section>
 
