@@ -147,8 +147,8 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 
 For this deliverable I did the following. I checked the box `[x]` and added a description for things I completed.
 
-- [ ] **Backend listens for WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **Frontend makes WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **Data sent over WebSocket connection** - I did not complete this part of the deliverable.
-- [ ] **WebSocket data displayed** - I did not complete this part of the deliverable.
-- [ ] **Application is fully functional** - I did not complete this part of the deliverable.
+- [x] **Backend listens for WebSocket connection** - The backend listens for WebSocket connection for Discover and myRecipes page. 
+- [x] **Frontend makes WebSocket connection** - The frontend makes WebSocket connection.
+- [x] **Data sent over WebSocket connection** - Recipe information is succesfully sent over connection. 
+- [x] **WebSocket data displayed** - Recipes from Recipes page are succesfully shared to the Discover page with who it is from. 
+- [x] **Application is fully functional** - My application should be fully functional. 
