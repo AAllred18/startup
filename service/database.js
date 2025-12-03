@@ -102,7 +102,6 @@ async function createRecipeForOwnerEmail(ownerEmail, payload) {
     steps:       payload.steps,       // string[]
     shared:      !!payload.shared,    // default false if not provided
     sharedAt:    payload.shared ? now : null,
-    createdAt:   now,
     updatedAt:   now,
   };
 
@@ -141,19 +140,37 @@ async function deleteRecipeByIdForOwnerEmail(id, ownerEmail) {
 }
 
 // ---------- Sharing helpers for Discover ----------
-async function setRecipeShareStatus(id, ownerEmail, share) {
+async function setRecipeShareStatus(id, ownerEmail, shared) {
   const _id = new ObjectId(id);
   const now = new Date();
 
+  // 1) Read by _id only
+  const current = await recipeCollection.findOne({ _id });
+
+  if (!current) {
+    console.warn('[share] no such _id:', id);
+    return null; // 404
+  }
+
+  // 2) Verify owner matches exactly (trim to be forgiving if you want)
+  const dbOwner = (current.ownerEmail ?? '');
+  const reqOwner = (ownerEmail ?? '');
+  if (dbOwner !== reqOwner) {
+    console.warn('[share] owner mismatch: db=', JSON.stringify(dbOwner), ' req=', JSON.stringify(reqOwner));
+    return null; // 404
+  }
+
+  // 3) Update by _id only
   const res = await recipeCollection.findOneAndUpdate(
-    { _id, ownerEmail },
-    { $set: { shared: !!share, sharedAt: share ? now : null, updatedAt: now } },
+    { _id },
+    { $set: { shared, sharedAt: shared ? now : null, updatedAt: now } },
     { returnDocument: 'after' }
   );
 
-  if (!res.value) return null;
-  return toRecipeDTO(res.value);
+  return res.value ? toRecipeDTO(res.value) : null;
 }
+
+
 
 async function listSharedRecipes(excludeOwnerEmail) {
   const filter = excludeOwnerEmail

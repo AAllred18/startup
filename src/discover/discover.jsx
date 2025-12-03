@@ -61,29 +61,31 @@ export function Discover() {
   }, []);
 
   useEffect(() => {
-    // initial load
+  reload();
+
+  const unsubscribe = RecipeNotifier.addHandler((evt) => {
+  // status badge (optional)
+  if (evt.type === RecipeEvent.System) {
+    const msg = (evt?.value?.msg || '').toLowerCase(); // 'connected' | 'disconnected'
+    setConnStatus(msg);
+    return;
+  }
+
+  if (
+    evt.type === RecipeEvent.Shared ||
+    evt.type === RecipeEvent.Unshared ||
+    evt.type === RecipeEvent.Updated ||
+    evt.type === RecipeEvent.Deleted
+  ) {
+    console.log('🔔 recipe event:', evt.type, evt.value?.id || evt.value);
     reload();
+  }
+});
 
-    // subscribe to WS events
-    const unsubscribe = RecipeNotifier.addHandler((evt) => {
-      if (evt.type === RecipeEvent.System) {
-        setConnStatus(evt?.value?.msg === 'Connected' ? 'Connected' : 'Disconnected');
-        return;
-      }
 
-      // For any recipe change event, simplest is to re-fetch the list.
-      if (
-        evt.type === RecipeEvent.Shared ||
-        evt.type === RecipeEvent.Unshared ||
-        evt.type === RecipeEvent.Updated ||
-        evt.type === RecipeEvent.Deleted
-      ) {
-        reload();
-      }
-    });
+  return unsubscribe;
+}, [reload]);
 
-    return unsubscribe;
-  }, [reload]);
 
   // Hook up buttons to popup
   const handleView = () => openComingSoon();
@@ -99,16 +101,6 @@ export function Discover() {
           <h1>Discover</h1>
           <h3>Explore new recipes from people on our platform</h3>
         </div>
-
-        {/* tiny status badge */}
-        <span
-          className={`badge text-bg-${
-            connStatus === 'connected' ? 'success' : connStatus === 'connecting' ? 'secondary' : 'warning'
-          }`}
-          title="WebSocket status"
-        >
-          {connStatus}
-        </span>
       </div>
 
       {/* Header actions */}

@@ -188,6 +188,8 @@ apiRouter.get('/recipes', verifyAuth, async (req, res) => {
 apiRouter.post('/recipes', verifyAuth, async (req, res) => {
   const data = normalizeRecipeInput(req.body);
   const created = await DB.createRecipeForOwnerEmail(req.user.email, { ...data, shared: false });
+  // notify lists (not strictly needed for Discover unless you show your own items, but useful)
+  ws.broadcast({ type: 'recipe:updated', recipe: created });
   res.status(201).send(created);
 });
 
@@ -203,25 +205,44 @@ apiRouter.put('/recipes/:id', verifyAuth, async (req, res) => {
   const patch = normalizeRecipeInput(req.body, {});
   const updated = await DB.updateRecipeByIdForOwnerEmail(req.params.id, req.user.email, patch);
   if (!updated) return res.status(404).send({ msg: 'Not found' });
+
+  // if this recipe is shared, Discover should refresh
+  if (updated.shared) {
+    ws.broadcast({ type: 'recipe:updated', recipe: updated });
+  }
   res.send(updated);
 });
 
 apiRouter.delete('/recipes/:id', verifyAuth, async (req, res) => {
+  // if you want Discover to drop deleted shared items immediately,
+  // fetch first so you can include the id in the broadcast.
+  const existing = await DB.getRecipeByIdForOwnerEmail(req.params.id, req.user.email);
   const ok = await DB.deleteRecipeByIdForOwnerEmail(req.params.id, req.user.email);
   if (!ok) return res.status(404).send({ msg: 'Not found' });
+
+  if (existing?.shared) {
+    ws.broadcast({ type: 'recipe:deleted', recipe: { id: existing.id } });
+  }
   res.status(204).end();
 });
 
 // Share a recipe 
 apiRouter.post('/recipes/:id/share', verifyAuth, async (req, res) => {
   try {
-    const updated = await DB.setRecipeShareStatus(req.params.id, req.user.email, true);
-    if (!updated) return res.status(404).send({ msg: 'Not found' });
-    ws.broadcast({ type: 'recipe:shared', recipe: updated });   // <--
+    const { id } = req.params;
+    const owner = req.user.email;
+    console.log('[share] id', id, 'ownerEmail', owner);
+
+    const updated = await DB.setRecipeShareStatus(id, owner, true);
+    if (!updated) {
+      console.log('[share] NOT FOUND');
+      return res.status(404).send({ msg: 'Not found' });
+    }
+    ws.broadcast({ type: 'recipe:shared', recipe: updated });
     res.send({ ok: true, id: updated.id, shared: true });
   } catch (e) {
-    console.error(e);
-    res.status(500).send({ msg: 'Share failed' });
+    console.error('Share failed:', e);
+    res.status(500).send({ msg: 'Share failed', error: String(e?.message || e) });
   }
 });
 
@@ -230,11 +251,11 @@ apiRouter.delete('/recipes/:id/share', verifyAuth, async (req, res) => {
   try {
     const updated = await DB.setRecipeShareStatus(req.params.id, req.user.email, false);
     if (!updated) return res.status(404).send({ msg: 'Not found' });
-    ws.broadcast({ type: 'recipe:unshared', recipe: updated }); // <--
+    ws.broadcast({ type: 'recipe:unshared', recipe: updated });
     res.send({ ok: true, id: updated.id, shared: false });
   } catch (e) {
-    console.error(e);
-    res.status(500).send({ msg: 'Unshare failed' });
+    console.error('Unshare failed:', e);
+    res.status(500).send({ msg: 'Unshare failed', error: String(e?.message || e) });
   }
 });
 

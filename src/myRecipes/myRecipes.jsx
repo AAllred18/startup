@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { RecipeCard } from '../../components/RecipeCard';
 import '../recipes.css'
@@ -9,43 +9,52 @@ export function MyRecipes() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState('');
+  const [busyIds, setBusyIds] = useState(new Set()); // disable buttons per card during calls
   const navigate = useNavigate();
-  const handleEdit = (r) => navigate(`/recipe/${r.id}/edit`, { state: { recipe: r } });
+
+  // ---- helpers ----
+  const isObjectId = (s) => /^[0-9a-fA-F]{24}$/.test(String(s || ''));
 
   const toCard = (r) => ({
-    id: r.id,
+    id: r.id,                              // must be Mongo _id from server
     title: r.title ?? 'Untitled',
     totalTime: r.totalTime ?? '—',
     difficulty: r.difficulty ?? '—',
     imageUrl: r.imageUrl ?? 'placeholder.jpg',
-    shared: !!r.shared, 
+    shared: !!r.shared,
   });
+
+  const fetchMyRecipes = useCallback(async () => {
+    setErr(null);
+    setLoading(true);
+    try {
+      // Fetch username
+      const userRes = await fetch('/api/user', { credentials: 'include' });
+      if (userRes.ok) {
+        const user = await userRes.json();
+        setUserEmail(user.email);
+      }
+
+      // Fetch recipes (these will have correct Mongo ids)
+      const r = await fetch('/api/recipes', { credentials: 'include' });
+      if (!r.ok) throw new Error('Failed to load your recipes.');
+      const data = await r.json();
+      setRecipes(data.map(toCard));
+    } catch (e) {
+      setErr(e.message || 'Failed to load your recipes.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      try {
-        setLoading(true);
-        setErr(null);
-        // Fetch username
-        const userRes = await fetch('/api/user', { credentials: 'include' });
-        if (userRes.ok) {
-          const user = await userRes.json();
-          if (!cancelled) setUserEmail(user.email);
-        }
-        // Fetch recipes
-        const r = await fetch('/api/recipes', { credentials: 'include' });
-        if (!r.ok) throw new Error('Failed to load your recipes.');
-        const data = await r.json();
-        if (!cancelled) setRecipes(data.map(toCard));
-      } catch (e) {
-        if (!cancelled) setErr(e.message || 'Failed to load your recipes.');
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
+      if (cancelled) return;
+      await fetchMyRecipes();
     })();
     return () => { cancelled = true; };
-  }, []);
+  }, [fetchMyRecipes]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -56,34 +65,47 @@ export function MyRecipes() {
     navigate(`/recipe/${recipe.id}/edit`, { state: { recipe } });
   };
 
-  const [busyIds, setBusyIds] = useState(new Set()); // to disable buttons per card during calls
+  const toggleShare = async (recipe, share) => {
+    try {
+      // Guard: only call API with a real Mongo ObjectId
+      if (!isObjectId(recipe.id)) {
+        console.warn('Share blocked – not a Mongo ObjectId:', recipe.id);
+        alert('Recipe is still syncing. Please try again in a moment.');
+        return;
+      }
 
- const toggleShare = async (recipe, share) => {
-   try {
-     setBusyIds(prev => new Set(prev).add(recipe.id));
-     const r = await fetch(`/api/recipes/${recipe.id}/share`, {
-       method: share ? 'POST' : 'DELETE',
-       credentials: 'include',
-     });
-     if (!r.ok) {
-       const txt = await r.text().catch(() => '');
-       throw new Error(txt || (share ? 'Share failed' : 'Unshare failed'));
-     }
-     // optimistic state update
-     setRecipes(prev => prev.map(x => x.id === recipe.id ? { ...x, shared: share } : x));
-   } catch (e) {
-     alert(e.message || (share ? 'Share failed' : 'Unshare failed'));
-   } finally {
-     setBusyIds(prev => {
-       const next = new Set(prev);
-       next.delete(recipe.id);
-       return next;
-     });
-   }
- };
+      setBusyIds(prev => new Set(prev).add(recipe.id));
 
- const onShare = (recipe) => toggleShare(recipe, true);
- const onUnshare = (recipe) => toggleShare(recipe, false);
+      console.log('Share click → id:', recipe.id, 'user:', userEmail, 'share?', share);
+
+      const r = await fetch(`/api/recipes/${recipe.id}/share`, {
+        method: share ? 'POST' : 'DELETE',
+        credentials: 'include',
+      });
+
+      if (!r.ok) {
+        const txt = await r.text().catch(() => '');
+        throw new Error(txt || (share ? 'Share failed' : 'Unshare failed'));
+      }
+
+      // Optimistic local update
+      setRecipes(prev => prev.map(x => x.id === recipe.id ? { ...x, shared: share } : x));
+
+      // Optional but keeps UI perfectly in sync with DB/broadcasts
+      await fetchMyRecipes();
+    } catch (e) {
+      alert(e.message || (share ? 'Share failed' : 'Unshare failed'));
+    } finally {
+      setBusyIds(prev => {
+        const next = new Set(prev);
+        next.delete(recipe.id);
+        return next;
+      });
+    }
+  };
+
+  const onShare = (recipe) => toggleShare(recipe, true);
+  const onUnshare = (recipe) => toggleShare(recipe, false);
 
   return (
     <main>
@@ -131,13 +153,14 @@ export function MyRecipes() {
 
           {filtered.map((recipe) => (
             <RecipeCard
-              key={recipe.id}
+              key={recipe.id || recipe.title}                 // fallback during first render if needed
               recipe={recipe}
               onEdit={onEdit}
               onShare={() => onShare(recipe)}
               onUnshare={() => onUnshare(recipe)}
               isShared={recipe.shared}
-              disabled={busyIds.has(recipe.id)}
+              // Disable when busy, while initial loading, or until we have a real Mongo id
+              disabled={busyIds.has(recipe.id) || loading || !isObjectId(recipe.id)}
             />
           ))}
         </div>

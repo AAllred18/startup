@@ -1,46 +1,34 @@
-const { WebSocketServer, WebSocket } = require('ws');
+// peerProxy.js  (Simon-style)
+const { WebSocketServer } = require('ws');
 
 function peerProxy(httpServer) {
-  // Create a websocket object
-  const socketServer = new WebSocketServer({ server: httpServer });
+  const wss = new WebSocketServer({ noServer: true });
+  const peers = new Set();
 
-  socketServer.on('connection', (socket) => {
-    socket.isAlive = true;
-
-    // Forward messages to everyone except the sender
-    socket.on('message', function message(data) {
-      socketServer.clients.forEach((client) => {
-        if (client !== socket && client.readyState === WebSocket.OPEN) {
-          client.send(data);
-        }
-      });
-    });
-
-    // Respond to pong messages by marking the connection alive
-    socket.on('pong', () => {
-      socket.isAlive = true;
+  // only accept ws on /ws (like Simon)
+  httpServer.on('upgrade', (req, socket, head) => {
+    if (req.url !== '/ws') {
+      socket.destroy();
+      return;
+    }
+    wss.handleUpgrade(req, socket, head, (ws) => {
+      wss.emit('connection', ws, req);
     });
   });
 
-  // Periodically send out a ping message to make sure clients are alive
-  setInterval(() => {
-    socketServer.clients.forEach(function each(client) {
-      if (client.isAlive === false) return client.terminate();
+  wss.on('connection', (ws) => {
+    peers.add(ws);
+    ws.on('close', () => peers.delete(ws));
+  });
 
-      client.isAlive = false;
-      client.ping();
-    });
-  }, 10000);
-
-  function broadcast(payload) {
-    const data = typeof payload === 'string' ? payload : JSON.stringify(payload);
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) client.send(data);
-    });
+  function broadcast(message) {
+    const data = JSON.stringify(message);
+    for (const ws of peers) {
+      if (ws.readyState === ws.OPEN) ws.send(data);
+    }
   }
 
   return { broadcast };
-
 }
 
 module.exports = { peerProxy };
