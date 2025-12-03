@@ -150,5 +150,5 @@ For this deliverable I did the following. I checked the box `[x]` and added a de
 - [x] **Backend listens for WebSocket connection** - The backend listens for WebSocket connection for Discover and myRecipes page. 
 - [x] **Frontend makes WebSocket connection** - The frontend makes WebSocket connection.
 - [x] **Data sent over WebSocket connection** - Recipe information is succesfully sent over connection. 
-- [x] **WebSocket data displayed** - Recipes from Recipes page are succesfully shared to the Discover page with who it is from. 
+- [x] **WebSocket data displayed** - Recipes from recipes page are succesfully shared/unshared to the Discover page with who it is from. The discover page updates automatically to the changes of anyone (including yourself) sharing/unsharing a recipe. 
 - [x] **Application is fully functional** - My application should be fully functional. 
