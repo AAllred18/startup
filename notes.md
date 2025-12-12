@@ -366,3 +366,241 @@ ls -la truth
 .container img { max-width: 100%; height: auto; }
 ```
 - Items line up in a row, wrap if needed, spacing via gap.
+
+
+### Final Study guide
+
+Networking, Web, and React — Quick Notes
+Default Ports
+
+HTTP: 80
+
+HTTPS: 443
+
+SSH: 22
+
+HTTP Status Codes (300/400/500)
+
+3xx (Redirection): Client must take additional action (e.g., 301, 302, 304).
+
+4xx (Client errors): Problem with the request (e.g., 400, 401, 403, 404).
+
+5xx (Server errors): Server failed to fulfill a valid request (e.g., 500, 502, 503).
+
+Content-Type Header
+
+Tells the recipient what media type the body is (e.g., application/json, text/html, image/png).
+
+Enables correct parsing and content negotiation alongside the client’s Accept header.
+
+Cookies: Secure, HttpOnly, SameSite
+
+Secure: Cookie is only sent over HTTPS (not over plain HTTP).
+
+HttpOnly: Cookie not accessible to JavaScript (document.cookie), reducing XSS risk.
+
+SameSite: Controls cross-site sending of cookies.
+
+Strict: Only same-site requests send the cookie (strongest CSRF protection).
+
+Lax: Sends on top-level navigations (GET) from other sites; good default.
+
+None: Sends on all cross-site requests, must also set Secure.
+
+Express Middleware — Console Output (GET /api/document)
+
+We don’t have the exact middleware snippet, so here’s the typical outcome based on common logging patterns:
+
+If middleware logs method & path, e.g. console.log(req.method, req.path) →
+Output: GET /api/document
+
+If it logs original URL, e.g. console.log(req.originalUrl) →
+Output: /api/document
+
+If it includes query or params, output will include those accordingly.
+
+(Swap in your actual console.log(...) expression to predict exact output.)
+
+Front-End fetch — What Does It Return?
+
+fetch(url, options) returns a Promise<Response>.
+
+You typically parse body via response.json() (Promise), response.text(), or response.blob().
+
+Example:
+
+const data = await fetch('/api/thing')
+  .then(r => {
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return r.json();
+  });
+// data = parsed JSON from the response body
+
+MongoDB Query — Select All Matching { name: "Mark" }
+
+Equality match:
+
+db.collection.find({ name: "Mark" })        // returns a cursor
+db.collection.find({ name: "Mark" }).toArray() // resolves to all matching docs
+
+
+Matches documents whose name field is exactly "Mark" (type-sensitive).
+
+Password Storage (Best Practice)
+
+Never store plaintext or reversible encryption.
+
+Use a slow, salted password hash: Argon2id (preferred), scrypt, or bcrypt with strong parameters.
+
+Store: { hash, salt (if algorithm needs explicit), algorithm/params }.
+
+Enforce rotation on compromise and rate-limit login attempts.
+
+WebSockets — What Will the Front End Log?
+
+Without the exact code, here’s the typical lifecycle and logs:
+
+On connection open: onopen → logs something like "ws open"
+
+On message: onmessage → logs the server-sent data (often echoes back what the client sent)
+
+On error/close: onerror / onclose → logs error or close reason.
+
+If your server echoes incoming messages:
+
+(open) → "connected"
+(send "hi") → server echoes → front end logs: "hi"
+
+WebSocket Protocol — What It Provides
+
+A persistent, full-duplex channel over a single TCP connection.
+
+Initiated via HTTP Upgrade handshake, then frames (low overhead).
+
+Enables real-time, bidirectional messaging (chat, dashboards, multiplayer, etc.).
+
+Acronyms
+
+JSX: JavaScript XML (syntax extension for UI markup in JS)
+
+JS: JavaScript
+
+AWS: Amazon Web Services
+
+NPM: Node Package Manager (also the registry/CLI)
+
+NVM: Node Version Manager
+
+React — Text Content from a Component (with params/props)
+
+A React component receives props and returns elements; the rendered text is whatever the returned elements contain.
+
+Example:
+
+function Greeting({ name }) {
+  return <p>Hello, {name}!</p>;
+}
+// <Greeting name="AJ" /> → renders: "Hello, AJ!"
+
+React — Components Including Each Other
+
+Components compose into a tree; React renders the combined output of the root component to the DOM container.
+
+Only one root mount point (e.g., #root), but any number of nested components.
+
+React.useState
+
+Adds state to a function component.
+
+Returns [state, setState]. Calling setState(newValue) triggers a re-render with the updated state.
+
+const [count, setCount] = React.useState(0);
+
+React Hooks — What They’re For
+
+Reuse stateful logic and access React features in function components:
+
+Manage state, refs, side effects, context, performance optimizations, etc.
+
+Major Hooks (Quick Roles)
+
+State Hook – useState: Local component state.
+
+Context Hook – useContext: Read from a React Context (dependency injection / global-ish state).
+
+Ref Hook – useRef: Mutable container that persists across renders; also references DOM nodes.
+
+Effect Hook – useEffect: Run side effects after render (data fetch, subscriptions, DOM effects); clean up on unmount or deps change.
+
+Performance Hooks:
+
+useMemo: Memoize expensive calculations.
+
+useCallback: Memoize function references to avoid unnecessary re-renders.
+
+useTransition / useDeferredValue: Coordinate UI responsiveness for expensive updates.
+
+(See the React docs for the full list and nuanced behaviors.)
+
+React Router — Truths (General)
+
+Use a router provider (e.g., <BrowserRouter>) at the app root.
+
+Routes are declarative; the first best match (by path pattern) renders.
+
+Use <Link to="..."> for client-side navigation (no full page reload).
+
+Use hooks:
+
+useParams() to read :id segments,
+
+useNavigate() to imperatively navigate,
+
+useLocation() to read current location.
+
+Nested routes render into <Outlet />.
+
+package.json
+
+Project metadata and scripts, plus dependencies (dependencies, devDependencies).
+
+Controls package name/version, entry points, engines, and tool configs (via fields).
+
+Common scripts:
+
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "start": "node server.js",
+    "test": "vitest"
+  }
+}
+
+fetch
+
+Browser/Node API to make HTTP requests; returns a Promise<Response>.
+
+Supports methods, headers, body, CORS, credentials.
+
+Parse body via response.json(), text(), etc.
+
+Node.js
+
+JavaScript runtime (V8) for server-side & tooling.
+
+Non-blocking I/O, event loop; huge npm ecosystem; great for APIs, CLIs, build tools.
+
+PM2
+
+Production process manager for Node apps.
+
+Handles daemonization, auto-restart on crash, logging, clustering, and zero-downtime reloads.
+
+Vite
+
+Fast dev server with native ES modules + HMR.
+
+Build tool (Rollup under the hood) for optimized production bundles.
+
+Minimal config, great DX for React/Vue/etc.
